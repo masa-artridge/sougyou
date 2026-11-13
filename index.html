@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1d3b34">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>創業サポート</title>
+<style>
+:root{
+  --bg:#f3f6f5; --card:#fff; --ink:#1b2724; --sub:#5a6763; --line:#dfe6e3; --soft:#f5f8f7;
+  --pri:#1f7a63; --pri-weak:#e3f3ee; --blue:#2f6fd0; --blue-weak:#e8effc; --ok:#13804a; --ok-weak:#e2f4e9;
+  --bad:#c42e2e; --bad-weak:#fdebeb; --warn:#9a5b00; --warn-weak:#fff3dd; --nav:#1d3b34; --nav-on:#2f5a4f;
+  --exp:#e0782b; --r:12px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:system-ui,-apple-system,"Noto Sans JP","Hiragino Sans","Yu Gothic UI",sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.6;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+#app{display:flex;min-height:100vh}
+.side{width:200px;flex-shrink:0;background:var(--nav);color:#fff;position:sticky;top:0;height:100vh;overflow-y:auto;padding:calc(14px + env(safe-area-inset-top)) 10px 14px calc(10px + env(safe-area-inset-left))}
+.side .brand{font-weight:700;font-size:18px;padding:6px 10px 14px;line-height:1.3}
+.side .brand small{display:block;font-weight:400;font-size:12px;opacity:.75;margin-top:3px;word-break:break-all}
+.side button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;color:#d8e6e1;padding:12px;border-radius:10px;font-size:16px;text-align:left;cursor:pointer;min-height:48px}
+.side button.on{background:var(--nav-on);color:#fff;font-weight:700}
+.side .ico{width:24px;text-align:center;font-size:18px}
+.bottom{display:none;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--nav);padding:4px 4px calc(4px + env(safe-area-inset-bottom))}
+.bottom button{flex:1;border:0;background:none;color:#cfe0da;font-size:11px;padding:6px 0 4px;display:flex;flex-direction:column;align-items:center;gap:1px;border-radius:8px;min-height:54px;cursor:pointer;min-width:0}
+.bottom button .ico{font-size:20px;line-height:1.2}
+.bottom button.on{color:#fff;background:var(--nav-on);font-weight:700}
+main{flex:1;min-width:0;padding:calc(14px + env(safe-area-inset-top)) calc(18px + env(safe-area-inset-right)) 48px 18px;max-width:1280px}
+@media (max-width:859px){
+  .side{display:none} .bottom{display:flex}
+  main{padding:calc(10px + env(safe-area-inset-top)) 12px 100px}
+}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.top h1{font-size:22px;margin:0}
+.subtabs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px;margin-bottom:6px;scrollbar-width:none}
+.subtabs::-webkit-scrollbar{display:none}
+.subtabs button{flex-shrink:0;border:1px solid var(--line);background:#fff;padding:9px 16px;border-radius:999px;font-size:15px;cursor:pointer;min-height:44px;white-space:nowrap}
+.subtabs button.on{background:var(--pri);border-color:var(--pri);color:#fff;font-weight:700}
+.card{background:var(--card);border-radius:var(--r);padding:18px;box-shadow:0 1px 2px rgba(20,40,30,.07);margin-bottom:14px}
+.card h2{font-size:18px;margin:0 0 10px}
+.card h3{font-size:16px;margin:16px 0 6px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr))}
+.split{display:grid;gap:14px;grid-template-columns:1fr}
+@media (min-width:1000px){ .split{grid-template-columns:minmax(0,5fr) minmax(0,6fr)} .sticky{position:sticky;top:14px} }
+.kpis{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin-bottom:14px}
+.kpi{background:#fff;border-radius:var(--r);padding:14px 16px;box-shadow:0 1px 2px rgba(20,40,30,.07)}
+.kpis.flat .kpi{background:var(--soft);box-shadow:none}
+.kpi .l{font-size:13px;color:var(--sub)}
+.kpi .v{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px;white-space:nowrap}
+.kpi .v small{font-size:13px;font-weight:400;margin-left:2px}
+.kpi .s{font-size:12px;color:var(--sub);margin-top:2px}
+.muted{color:var(--sub)} .small{font-size:13px} .num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.plus{color:var(--ok)} .minus{color:var(--bad)}
+label.f{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px;font-weight:600}
+.inp,select.inp,textarea.inp{width:100%;border:1px solid #c9d3cf;border-radius:10px;padding:10px 12px;background:#fff;min-height:48px;font-size:16px}
+textarea.inp{line-height:1.6;resize:vertical}
+.inp:focus{outline:2px solid var(--pri);outline-offset:0;border-color:var(--pri)}
+.inp.big{font-size:26px;font-weight:700;text-align:right;min-height:60px;font-variant-numeric:tabular-nums}
+.inp.num{text-align:right;font-variant-numeric:tabular-nums}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid #c9d3cf;background:#fff;border-radius:10px;padding:10px 18px;min-height:48px;cursor:pointer;font-size:16px;font-weight:600;text-decoration:none}
+.btn.pri{background:var(--pri);color:#fff;border-color:var(--pri)}
+.btn.blue{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn.danger{background:var(--bad);color:#fff;border-color:var(--bad)}
+.btn.ghost{border-color:transparent;background:none;color:var(--pri)}
+.btn.sm{min-height:40px;padding:6px 12px;font-size:14px}
+.btn.wide{width:100%}
+.btn.dashed{border-style:dashed;color:var(--sub);width:100%;font-weight:500}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row.end{justify-content:flex-end}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg button{flex:1 1 auto;border:2px solid #c9d3cf;background:#fff;border-radius:10px;padding:10px 12px;min-height:48px;cursor:pointer;font-size:15px;font-weight:600}
+.seg button.on{border-color:var(--pri);background:var(--pri-weak);color:var(--pri)}
+.kind{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.kind button{border:2px solid var(--line);background:#fff;border-radius:12px;padding:14px;font-size:18px;font-weight:700;cursor:pointer;min-height:64px}
+.kind button.on.in{border-color:var(--blue);background:var(--blue-weak);color:var(--blue)}
+.kind button.on.out{border-color:var(--exp);background:#fdf0e6;color:#b35610}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:1px solid var(--line);background:var(--soft);border-radius:999px;padding:7px 13px;font-size:14px;cursor:pointer;min-height:40px}
+.chips button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chips .cls{font-size:12px;color:var(--sub);width:100%;margin-top:6px}
+.note{background:var(--soft);border-radius:10px;padding:10px 14px;font-size:14px;color:var(--sub);margin:8px 0}
+.note.warn{background:var(--warn-weak);color:var(--warn)}
+.note.ok{background:var(--ok-weak);color:var(--ok)}
+.note.bad{background:var(--bad-weak);color:var(--bad)}
+.note.info{background:var(--blue-weak);color:#24508f}
+.note b{font-weight:700}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--soft);font-size:13px;color:var(--sub);text-align:left;font-weight:600;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+tr.tot td{font-weight:700;background:var(--soft)}
+tr.grp td{background:#eaf1ee;font-weight:700;font-size:13px;color:var(--sub)}
+td.fut,th.fut{background:#fbfaf3}
+th.fut{background:#f4f1e1}
+td.lbl{white-space:nowrap;position:sticky;left:0;background:#fff;z-index:1}
+tr.tot td.lbl,tr.grp td.lbl{background:inherit}
+.badge{display:inline-block;font-size:11px;padding:1px 7px;border-radius:999px;background:var(--pri-weak);color:var(--pri);margin-left:4px;white-space:nowrap;vertical-align:1px}
+.badge.plan{background:#f4ecd5;color:#7d5a00}
+.badge.late{background:var(--bad-weak);color:var(--bad)}
+.stmt .ln{display:flex;justify-content:space-between;gap:10px;padding:7px 2px;border-bottom:1px dashed var(--line)}
+.stmt .ln.t{font-weight:700;background:var(--soft);border-bottom:0;padding:8px 8px;border-radius:6px;margin-top:4px}
+.stmt .ln.big{font-size:18px;background:var(--pri-weak);color:var(--pri)}
+.stmt .ln.in{padding-left:16px;font-size:14px;color:var(--sub)}
+.hbar{display:grid;grid-template-columns:minmax(80px,150px) 1fr auto;gap:8px;align-items:center;font-size:14px;margin:6px 0}
+.hbar .bar{height:16px;border-radius:4px}
+.chart{width:100%;height:auto;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--sub);margin-top:4px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.legend i.ln{height:3px;vertical-align:3px;width:16px}
+.list-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+.list-item:last-child{border-bottom:0}
+.list-item .when{font-size:13px;color:var(--sub);white-space:nowrap;min-width:52px}
+.list-item .what{flex:1;min-width:0}
+.list-item .what .m{font-size:13px;color:var(--sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list-item .amt{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.empty{text-align:center;color:var(--sub);padding:28px 10px}
+.irow{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.irow .inp{min-height:44px;padding:8px 10px}
+.irow .w1{flex:1 1 100px} .irow .w2{flex:2 1 130px} .irow .w3{flex:3 1 130px}
+.irow .amt{flex:0 0 120px;width:120px}
+.x{flex:0 0 40px;height:40px;border:0;background:none;color:#98a5a0;font-size:22px;cursor:pointer;border-radius:8px}
+.x:hover{background:var(--bad-weak);color:var(--bad)}
+.tot-line{display:flex;justify-content:space-between;align-items:baseline;font-weight:700;padding:8px 2px 0;border-top:1px solid var(--line);margin-top:6px}
+.tot-line .num{font-size:20px}
+.hero{background:var(--nav);color:#fff;border-radius:var(--r);padding:18px 20px;margin-bottom:14px}
+.hero .l{font-size:14px;opacity:.85}
+.hero .v{font-size:34px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+.hero .s{font-size:14px;opacity:.85;margin-top:4px}
+.prog{height:12px;background:#e4ebe8;border-radius:999px;overflow:hidden;margin-top:8px}
+.prog > div{height:100%;background:var(--pri);border-radius:999px}
+.steps{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.step{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:12px;cursor:pointer;background:#fff;text-align:left;min-height:60px}
+.step .n{flex:0 0 30px;height:30px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--sub)}
+.step.done .n{background:var(--ok);color:#fff}
+.step .t{font-weight:600;font-size:15px}
+.step .d{font-size:12px;color:var(--sub)}
+.monthnav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.monthnav b{font-size:18px;min-width:120px;text-align:center}
+.tip{border-left:4px solid var(--pri);padding:4px 12px;margin:8px 0;font-size:14px}
+details.help{margin-top:10px}
+details.help summary{cursor:pointer;color:var(--pri);font-weight:600;font-size:14px;min-height:36px;display:flex;align-items:center}
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#1b2724;color:#fff;padding:12px 20px;border-radius:999px;font-size:15px;z-index:99;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+.hide{display:none!important}
+.sec-no{display:inline-flex;width:28px;height:28px;border-radius:50%;background:var(--pri);color:#fff;align-items:center;justify-content:center;font-size:14px;margin-right:8px;vertical-align:1px}
+.bar-tools{display:flex;gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0}
+
+/* ---- 印刷（PDF保存）用 ---- */
+#print{display:none}
+@media print{
+  @page{size:A4;margin:12mm 12mm 14mm}
+  body{background:#fff}
+  #app,.bottom,.toast{display:none!important}
+  #print{display:block}
+}
+.pdoc{color:#000;font-size:10pt;line-height:1.45}
+.pdoc .ph{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px}
+.pdoc h1{font-size:18pt;letter-spacing:.4em;margin:0;text-align:center;flex:1}
+.pdoc .meta{font-size:9.5pt;text-align:right;line-height:1.5}
+.pdoc h2{font-size:10.5pt;margin:9px 0 3px;padding:2px 6px;background:#e6e6e6;border-left:4px solid #000}
+.pdoc table{width:100%;border-collapse:collapse;font-size:9.5pt}
+.pdoc th,.pdoc td{border:1px solid #444;padding:3px 6px;vertical-align:top;color:#000;height:22px}
+.pdoc th{background:#f0f0f0;font-weight:600;white-space:nowrap;font-size:9pt;text-align:left}
+.pdoc td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pdoc td.c{text-align:center}
+.pdoc .sec{break-inside:avoid;page-break-inside:avoid}
+.pdoc .tall{min-height:42px}
+.pdoc .pb{break-before:page;page-break-before:always}
+.pdoc .foot{font-size:8pt;color:#444;margin-top:8px}
+.pdoc tr.tt td{font-weight:700;background:#f6f6f6}
+</style>
+</head>
+<body>
+<div id="app">
+  <nav class="side" id="side"></nav>
+  <main id="main"></main>
+</div>
+<nav class="bottom" id="bottom"></nav>
+<div class="toast" id="toast"></div>
+<div id="print"></div>
+<input type="file" id="file" class="hide">
+
+<script>
+'use strict';
+/* =========================================================
+   創業サポート（資金繰り・収支計画・経営分析・創業計画書）
+   データはこの端末のブラウザ（localStorage）にだけ保存されます
+   ========================================================= */
+const KEY = 'sogyo_v1';
+const APP_VER = '1.0';
+
+/* ---------- 入出金のカテゴリと分類 ---------- */
+// 分類: sales売上 other他入金 loan借入 capital自己資金 / var変動費 fixed固定費 capex設備 repay返済 owner生活費・税
+const IN_CATS = [['売上','sales'],['その他の入金','other'],['借入','loan'],['自己資金の追加','capital']];
+const OUT_CATS = [
+  ['仕入','var'],['外注費','var'],['材料・資材','var'],
+  ['家賃','fixed'],['人件費','fixed'],['水道光熱費','fixed'],['通信費','fixed'],['広告宣伝費','fixed'],
+  ['旅費交通費','fixed'],['消耗品費','fixed'],['支払手数料','fixed'],['支払利息','fixed'],['保険料','fixed'],['その他の経費','fixed'],
+  ['設備の購入','capex'],['借入の返済','repay'],['生活費','owner'],['税金・社会保険','owner']
+];
+const CLASS_LABEL = {sales:'売上',other:'その他の入金',loan:'借入',capital:'自己資金',var:'変動費（仕入・外注など）',fixed:'固定費（毎月の経費）',capex:'設備の購入',repay:'借入の返済',owner:'生活費・税金・社会保険'};
+const CLASS_OF = {};
+IN_CATS.forEach(([c,k]) => CLASS_OF['in:'+c] = k);
+OUT_CATS.forEach(([c,k]) => CLASS_OF['out:'+c] = k);
+const clsOf = t => CLASS_OF[t.type+':'+t.cat] || (t.type === 'in' ? 'other' : 'fixed');
+// 旧「資金繰り管理」アプリのカテゴリ名 → 新カテゴリ名
+const OLD_CAT = {'入金その他':'その他の入金','生活費引出':'生活費','税金・保険':'税金・社会保険','その他':'その他の経費'};
+
+/* ---------- 業種プリセット ---------- */
+const PRESETS = {
+  standard:{label:'基本（創業計画表のかたち）',
+    price:[['商品・サービスの単価',5000]], cost:[['仕入・材料',2000]],
+    fixed:[['人件費',0],['家賃',50000],['電気・水道代',10000],['通信費',10000],['広告宣伝費',10000],['その他の経費（借入返済を含む）',20000]]},
+  freelance:{label:'Web制作・エンジニア・ライター',
+    price:[['制作・開発案件（1件）',200000]], cost:[['素材・有料プラグイン',5000],['外注費',0]],
+    fixed:[['通信費（スマホ・ネット）',12000],['会計ソフト',2000],['ソフト・ツール代',7000],['サーバー代（自社用）',1000],['その他の経費（借入返済を含む）',10000]]},
+  retail:{label:'ネットショップ・物販',
+    price:[['商品の平均単価',5000]], cost:[['商品仕入',2500],['梱包資材',150],['送料負担分',800],['決済手数料（約4%）',200]],
+    fixed:[['カートシステム利用料',3000],['在庫の保管場所',10000],['広告宣伝費',30000],['通信費',8000],['借入金の返済',0]]},
+  cafe:{label:'飲食店・カフェ',
+    price:[['ランチセット',1200],['追加ドリンク',300]], cost:[['食材原価',450],['おしぼり等消耗品',30]],
+    fixed:[['人件費（パート）',0],['店舗家賃',150000],['水道光熱費',35000],['POSレジ利用料',5000],['広告費（グルメサイト等）',20000],['借入金の返済',0]]},
+  salon:{label:'美容室・サロン・整体',
+    price:[['施術コース（60分）',8000]], cost:[['アメニティ・消耗品',300],['ドリンク・お茶菓子',100]],
+    fixed:[['店舗家賃',80000],['予約システム・広告費',30000],['水道光熱費',15000],['通信費',6000],['借入金の返済',0]]}
+};
+
+const TIPS = [
+  '入金はできるだけ早く、支払いはできるだけ遅く。請求から入金までの期間を短くすると、手元のお金に余裕が出ます。',
+  '固定費（毎月かかる経費）の見直しは、いちばん効果の大きい資金繰り改善策です。',
+  '利益が出ていても、入金が遅れると現金は足りなくなります（黒字倒産）。資金繰り表で数か月先まで確認しましょう。',
+  '所得税・住民税・国民健康保険は前年の所得で決まり、翌年に請求が来ます。黒字の月は少しずつ取り分けておきましょう。',
+  '事業用と生活用の口座を分けると、お金の流れがひと目でわかります。',
+  '値上げは客数を増やすより効果が大きいことがあります。「収支計画」の「客単価を変えたら」で確かめてみましょう。',
+  '手元の現金は、毎月の支出の2〜3か月分あると安心と言われます。'
+];
+
+/* ---------- 小さな道具 ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num = v => { const n = Number(String(v ?? '').replace(/[,，¥￥円\s]/g, '')); return isFinite(n) ? n : 0; };
+const yen = v => (Math.round(v) < 0 ? '-' : '') + '¥' + Math.abs(Math.round(v)).toLocaleString('ja-JP');
+const comma = v => Math.round(v).toLocaleString('ja-JP');
+const pct = (v, d = 1) => (isFinite(v) ? (v * 100).toFixed(d) : '0') + '%';
+const pad = n => String(n).padStart(2, '0');
+const ymd = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());   // ローカル日付（UTCずれ無し）
+const today = () => ymd(new Date());
+const ymOf = d => d.getFullYear() + '-' + pad(d.getMonth() + 1);
+const curYM = () => ymOf(new Date());
+const addMonth = (ym, k) => { const [y, m] = ym.split('-').map(Number); return ymOf(new Date(y, m - 1 + k, 1)); };
+const addMonthDate = (s, k) => { const [y, m, d] = s.split('-').map(Number); const last = new Date(y, m - 1 + k + 1, 0).getDate(); return ymd(new Date(y, m - 1 + k, Math.min(d, last))); };
+const ymLabel = ym => { const [y, m] = ym.split('-'); return y + '年' + Number(m) + '月'; };
+const mdLabel = s => { const [, m, d] = s.split('-'); return Number(m) + '/' + Number(d); };
+const jpDate = s => { if (!s) return ''; const [y, m, d] = s.split('-'); return y + '年' + Number(m) + '月' + Number(d) + '日'; };
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const sumAmt = list => list.reduce((a, i) => a + num(i.amount), 0);
+const clone = o => JSON.parse(JSON.stringify(o));
+const isYmd = s => /^\d{4}-\d{2}-\d{2}$/.test(s || '');
+function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('show'), 2400); }
+
+/* ---------- データ ---------- */
+function presetItems(key) {
+  const p = PRESETS[key] || PRESETS.standard;
+  const mk = arr => arr.map(([name, amount]) => ({id: uid(), name, amount}));
+  return {price: mk(p.price), cost: mk(p.cost), fixed: mk(p.fixed)};
+}
+function blankRow(list) {
+  return ({
+    career:{ym:'',text:''}, products:{name:'',share:''}, partners:{kind:'販売先',name:'',addr:'',share:'',terms:''},
+    loans:{lender:'',use:'',balance:'',annual:''}, equip:{name:'',vendor:'',amount:''}, work:{name:'',amount:''}
+  })[list];
+}
+function defBp() {
+  const o = {sales:'',cost:'',staff:'',rent:'',interest:'',other:''};
+  return {
+    created: today(), motive:'', career:[blankRow('career'),blankRow('career'),blankRow('career')],
+    exp:'none', expNote:'', licenses:'', ip:'',
+    products:[blankRow('products'),blankRow('products'),blankRow('products')], salesPoint:'', target:'', competition:'',
+    partners:[{...blankRow('partners'),kind:'販売先'},{...blankRow('partners'),kind:'仕入先'},{...blankRow('partners'),kind:'外注先'}],
+    staff:{officers:'',employees:'',family:'',part:''},
+    loans:[blankRow('loans')], equip:[blankRow('equip')], work:[blankRow('work')],
+    funds:{own:'',family:'',familyNote:'',bank:'',bankNote:'',other:'',otherNote:''},
+    outlook:{start:{...o}, later:{...o}}, basis:'', extra:''
+  };
+}
+function defaults() {
+  return {
+    version: 1,
+    profile: {name:'', owner:'', business:'', start:'', openCash:'', openDate: today()},
+    tx: [], hours: {},
+    sim: {industry:'standard', living:250000, ...presetItems('standard'), gpMode:'auto', gpManual:60, days:22, planCust:'', touched:false},
+    bp: defBp(),
+    meta: {lastBackup:'', created: today()}
+  };
+}
+// 足りない項目を補う（古いデータ・バックアップも読めるように）
+function merge(def, val) {
+  if (Array.isArray(def)) return Array.isArray(val) ? val : def;
+  if (def && typeof def === 'object') {
+    const out = {...(val && typeof val === 'object' && !Array.isArray(val) ? val : {})};
+    for (const k in def) out[k] = merge(def[k], val ? val[k] : undefined);
+    return out;
+  }
+  return val === undefined || val === null ? def : val;
+}
+function normalize(d) {
+  const s = merge(defaults(), d || {});
+  s.tx = s.tx.filter(t => t && isYmd(t.date) && (t.type === 'in' || t.type === 'out')).map(t => ({
+    id: t.id ? String(t.id) : uid(), date: t.date, type: t.type, cat: t.cat || (t.type === 'in' ? '売上' : 'その他の経費'),
+    amount: Math.abs(num(t.amount)), memo: t.memo || '', plan: !!t.plan
+  }));
+  ['price','cost','fixed'].forEach(k => s.sim[k] = s.sim[k].map(i => ({id: i.id ? String(i.id) : uid(), name: i.name || '', amount: num(i.amount)})));
+  return s;
+}
+let S;
+try { S = normalize(JSON.parse(localStorage.getItem(KEY) || 'null')); } catch (e) { S = normalize(null); }
+let saveTimer = null;
+function save(now) {
+  clearTimeout(saveTimer);
+  const w = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { toast('保存できませんでした（容量不足の可能性）'); } };
+  if (now) w(); else saveTimer = setTimeout(w, 250);
+}
+window.addEventListener('pagehide', () => save(true));
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') save(true); });
+
+/* ---------- 計算 ---------- */
+function zeroAgg() { return {sales:0,other:0,loan:0,capital:0,var:0,fixed:0,capex:0,repay:0,owner:0,byCat:{},count:0}; }
+function monthAgg(ym, withPlan) {
+  const r = zeroAgg();
+  S.tx.forEach(t => {
+    if (t.date.slice(0, 7) !== ym || (t.plan && !withPlan)) return;
+    const c = clsOf(t); r[c] += num(t.amount); r.count++;
+    if (c === 'var' || c === 'fixed') r.byCat[t.cat] = (r.byCat[t.cat] || 0) + num(t.amount);
+  });
+  return r;
+}
+function currentBalance() { return num(S.profile.openCash) + S.tx.filter(t => !t.plan).reduce((a, t) => a + (t.type === 'in' ? 1 : -1) * num(t.amount), 0); }
+
+function calcSim() {
+  const s = S.sim;
+  const fixed = sumAmt(s.fixed), price = sumAmt(s.price), costAuto = sumAmt(s.cost), living = num(s.living);
+  const gp = s.gpMode === 'manual' ? num(s.gpManual) / 100 : (price > 0 ? (price - costAuto) / price : 0);
+  const valid = gp > 0 && gp <= 1;
+  const need = living + fixed;
+  const target = valid ? need / gp : 0;
+  const bep = valid ? fixed / gp : 0;
+  const unitGp = price * gp;
+  const cust = valid && unitGp > 0 ? Math.ceil(need / unitGp) : 0;
+  const bepCust = valid && unitGp > 0 ? Math.ceil(fixed / unitGp) : 0;
+  const days = num(s.days);
+  const perDay = days > 0 ? cust / days : 0;
+  const planCust = num(s.planCust);
+  const planSales = planCust * price;
+  return {fixed, price, costAuto, living, gp, valid, need, target, bep, unitGp, cust, bepCust, days, perDay, planCust, planSales, diff: planSales - target};
+}
+
+// 資金繰り表（過去は実績のみ、今月以降は予定も含む見込み）
+function cashTable() {
+  const cur = curYM();
+  let first = (isYmd(S.profile.openDate) ? S.profile.openDate : today()).slice(0, 7), lastTx = cur;
+  S.tx.forEach(t => { const m = t.date.slice(0, 7); if (m < first) first = m; if (m > lastTx) lastTx = m; });
+  let last = addMonth(cur, 3);
+  if (lastTx > last) last = lastTx > addMonth(cur, 12) ? addMonth(cur, 12) : lastTx;
+  const cols = []; let bal = num(S.profile.openCash), guard = 0;
+  for (let m = first; m <= last && guard < 600; m = addMonth(m, 1), guard++) {
+    const fut = m >= cur;
+    const r = monthAgg(m, fut);
+    const inSum = r.sales + r.other + r.loan + r.capital;
+    const outSum = r.var + r.fixed + r.capex + r.repay + r.owner;
+    cols.push({ym: m, fut, cur: m === cur, start: bal, ...r, inSum, outSum, net: inSum - outSum, end: bal + inSum - outSum});
+    bal += inSum - outSum;
+  }
+  return cols;
+}
+function overduePlans() { const d = today(); return S.tx.filter(t => t.plan && t.date < d); }
+
+/* ---------- グラフ（SVG・外部ライブラリなし） ---------- */
+function niceStep(raw) { if (raw <= 0) return 1; const p = Math.pow(10, Math.floor(Math.log10(raw))); const n = raw / p; return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * p; }
+function shortYen(v) { const a = Math.abs(v); if (a >= 1e8) return (v / 1e8).toFixed(1).replace(/\.0$/, '') + '億'; if (a >= 1e4) return Math.round(v / 1e4).toLocaleString() + '万'; return Math.round(v).toLocaleString(); }
+function chartSVG({labels, bars = [], lines = [], hl = -1, H = 280}) {
+  const W = 760, L = 58, R = 10, T = 14, B = 34;
+  const vals = [0];
+  bars.forEach(b => b.data.forEach(v => vals.push(v)));
+  lines.forEach(l => l.data.forEach(v => v != null && vals.push(v)));
+  let max = Math.max(...vals), min = Math.min(...vals);
+  if (max === min) max = min + 10000;
+  const step = niceStep((max - min) / 4);
+  max = Math.ceil(max / step) * step; min = Math.floor(min / step) * step;
+  const y = v => T + (max - v) / (max - min) * (H - T - B);
+  const n = Math.max(1, labels.length), cw = (W - L - R) / n;
+  let g = '';
+  if (hl >= 0) g += `<rect x="${L + cw * hl}" y="${T}" width="${cw}" height="${H - T - B}" fill="#f4f1e1"/>`;
+  for (let v = min; v <= max + 1e-6; v += step) {
+    g += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="${v === 0 ? '#9aa8a3' : '#e5ebe8'}" stroke-width="1"/>`;
+    g += `<text x="${L - 6}" y="${y(v) + 4}" font-size="12" text-anchor="end" fill="#5a6763">${shortYen(v)}</text>`;
+  }
+  const gw = cw * 0.72, bw = bars.length ? gw / bars.length : 0;
+  bars.forEach((b, bi) => b.data.forEach((v, i) => {
+    const x = L + cw * i + (cw - gw) / 2 + bw * bi, y1 = y(Math.max(v, 0)), y2 = y(Math.min(v, 0));
+    g += `<rect x="${x + 1}" y="${y1}" width="${Math.max(1, bw - 2)}" height="${Math.max(0, y2 - y1)}" rx="2" fill="${b.color}"><title>${esc(labels[i])} ${esc(b.name)} ${yen(v)}</title></rect>`;
+  }));
+  lines.forEach(l => {
+    const pts = l.data.map((v, i) => v == null ? null : [L + cw * i + cw / 2, y(v)]).filter(Boolean);
+    if (pts.length) g += `<polyline points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="${l.color}" stroke-width="2.5" ${l.dash ? 'stroke-dasharray="6 5"' : ''}/>`;
+    if (!l.dash) l.data.forEach((v, i) => { if (v != null) g += `<circle cx="${L + cw * i + cw / 2}" cy="${y(v)}" r="3.5" fill="${l.color}"><title>${esc(labels[i])} ${esc(l.name)} ${yen(v)}</title></circle>`; });
+  });
+  const every = n > 12 ? 2 : 1;
+  labels.forEach((lb, i) => { if (i % every === 0) g += `<text x="${L + cw * i + cw / 2}" y="${H - 12}" font-size="12" text-anchor="middle" fill="#5a6763">${esc(lb)}</text>`; });
+  const lg = bars.map(b => `<span><i style="background:${b.color}"></i>${esc(b.name)}</span>`).concat(lines.map(l => `<span><i class="ln" style="background:${l.color}"></i>${esc(l.name)}</span>`)).join('');
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img">${g}</svg><div class="legend">${lg}</div>`;
+}
+const mLabel = ym => { const [y, m] = ym.split('-'); return Number(m) === 1 ? y.slice(2) + '/1月' : Number(m) + '月'; };
+
+/* =========================================================
+   画面
+   ========================================================= */
+const TABS = [
+  ['home','🏠','ホーム'], ['sim','📐','収支計画'], ['rec','✏️','入出金'], ['cash','💴','資金繰り'],
+  ['ana','📊','経営分析'], ['bp','📄','創業計画書'], ['set','⚙️','設定']
+];
+const UI = {tab:'home', recSub:'form', listYM: curYM(), listFilter:'all', anaPeriod:'last12', editId:null, rec:null};
+try { const t = sessionStorage.getItem('sogyo_tab'); if (t && TABS.some(x => x[0] === t)) UI.tab = t; } catch (e) {}
+
+function renderNav() {
+  const nm = S.profile.name ? `<small>${esc(S.profile.name)}</small>` : '<small>創業したばかりの方の経営ノート</small>';
+  $('side').innerHTML = `<div class="brand">🌱 創業サポート${nm}</div>` + TABS.map(([k, i, l]) => `<button class="${UI.tab === k ? 'on' : ''}" onclick="App.go('${k}')"><span class="ico">${i}</span>${l}</button>`).join('');
+  $('bottom').innerHTML = TABS.map(([k, i, l]) => `<button class="${UI.tab === k ? 'on' : ''}" onclick="App.go('${k}')"><span class="ico">${i}</span>${l}</button>`).join('');
+}
+function render(keepScroll) {
+  renderNav();
+  const y = window.scrollY;
+  $('main').innerHTML = ({home: vHome, sim: vSim, rec: vRec, cash: vCash, ana: vAna, bp: vBp, set: vSet})[UI.tab]();
+  if (UI.tab === 'bp') updateBpCalc();
+  window.scrollTo(0, keepScroll ? y : 0);
+}
+
+/* ---------- ホーム ---------- */
+function vHome() {
+  const cur = curYM(), sim = calcSim(), a = monthAgg(cur, false), bal = currentBalance();
+  const op = a.sales - a.var - a.fixed;
+  const cols = cashTable();
+  const c3 = cols.find(c => c.ym === addMonth(cur, 3));
+  const short = cols.find(c => c.fut && c.end < 0);
+  const late = overduePlans();
+  const prog = sim.target > 0 ? Math.min(100, a.sales / sim.target * 100) : 0;
+  const bpFilled = ['motive','salesPoint','target'].filter(k => String(S.bp[k]).trim()).length + (S.bp.products.some(p => p.name.trim()) ? 1 : 0);
+  const steps = [
+    [S.sim.touched, '収支計画をたてる', '生活費から目標売上を逆算', "App.go('sim')"],
+    [S.profile.openCash !== '' && S.profile.openCash !== null, '今の手元資金を入れる', '設定 → 開始時の残高', "App.go('set')"],
+    [S.tx.length > 0, '入出金を記録する', '売上・経費・予定', "App.go('rec')"],
+    [bpFilled >= 3, '創業計画書を書く', 'PDFで保存できます', "App.go('bp')"]
+  ];
+  const doneN = steps.filter(s => s[0]).length;
+  const backupOld = S.tx.length >= 5 && (!S.meta.lastBackup || (Date.now() - new Date(S.meta.lastBackup).getTime()) > 30 * 864e5);
+  const alerts = [];
+  if (short) alerts.push(`<div class="note bad"><b>${ymLabel(short.ym)}に資金が足りなくなる見込みです</b>（月末残高 ${yen(short.end)}）。入金を早める・支払いを後ろにずらす・借入を相談するなど、早めに手を打ちましょう。 <button class="btn sm" onclick="App.go('cash')">資金繰り表を見る</button></div>`);
+  if (late.length) alerts.push(`<div class="note warn"><b>日付が過ぎた「予定」が${late.length}件あります。</b>実際に入出金したら「済」に、なくなったら削除してください。 <button class="btn sm" onclick="App.lateList()">確認する</button></div>`);
+  if (backupOld) alerts.push(`<div class="note info">データはこのタブレットの中だけにあります。月に1回は<b>バックアップ</b>を取っておきましょう。 <button class="btn sm" onclick="App.backup()">今すぐバックアップ</button></div>`);
+  const recent = [...S.tx].sort((x, y) => y.date.localeCompare(x.date) || String(y.id).localeCompare(String(x.id))).slice(0, 6);
+  const tip = TIPS[new Date().getDate() % TIPS.length];
+  return `
+  <div class="top"><h1>${S.profile.name ? esc(S.profile.name) : 'ようこそ'}</h1><span class="muted">${jpDate(today())}</span></div>
+  ${doneN < 4 ? `<div class="card"><h2>はじめの4ステップ <span class="muted small">（${doneN}/4 完了）</span></h2><div class="steps">${steps.map((s, i) => `<button class="step ${s[0] ? 'done' : ''}" onclick="${s[3]}"><span class="n">${s[0] ? '✓' : i + 1}</span><span><div class="t">${s[1]}</div><div class="d">${s[2]}</div></span></button>`).join('')}</div></div>` : ''}
+  ${alerts.join('')}
+  <div class="kpis">
+    <div class="kpi"><div class="l">いまの手元資金</div><div class="v ${bal < 0 ? 'minus' : ''}">${yen(bal)}</div><div class="s">開始残高＋実績の入出金</div></div>
+    <div class="kpi"><div class="l">今月の売上</div><div class="v">${yen(a.sales)}</div>
+      ${sim.target > 0 ? `<div class="prog"><div style="width:${prog}%"></div></div><div class="s">目標 ${yen(sim.target)} の ${Math.round(a.sales / sim.target * 100)}%</div>` : '<div class="s">目標は「収支計画」で設定</div>'}</div>
+    <div class="kpi"><div class="l">今月の利益（売上−経費）</div><div class="v ${op < 0 ? 'minus' : 'plus'}">${yen(op)}</div><div class="s">生活費・返済の前の金額</div></div>
+    <div class="kpi"><div class="l">${c3 ? ymLabel(c3.ym) + '末の残高見込み' : '3か月後の残高見込み'}</div><div class="v ${c3 && c3.end < 0 ? 'minus' : ''}">${c3 ? yen(c3.end) : '—'}</div><div class="s">登録した「予定」をもとに計算</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h2>すぐ記録する</h2>
+      <div class="kind"><button class="on in" onclick="App.quick('in')">＋ 入金</button><button class="on out" onclick="App.quick('out')">－ 出金</button></div>
+      <h3>最近の入出金</h3>
+      ${recent.length ? recent.map(txItem).join('') : '<div class="empty">まだ記録がありません</div>'}
+    </div>
+    <div class="card"><h2>💡 今日のヒント</h2><div class="tip">${tip}</div>
+      ${sim.valid ? `<h3>あなたの計画のポイント</h3>
+      <div class="stmt">
+        <div class="ln"><span>月の目標売上</span><span class="num">${yen(sim.target)}</span></div>
+        <div class="ln"><span>赤字にならない売上（損益分岐点）</span><span class="num">${yen(sim.bep)}</span></div>
+        <div class="ln"><span>必要なお客さま</span><span class="num">月${comma(sim.cust)}人${sim.days ? `（1日${sim.perDay.toFixed(1)}人）` : ''}</span></div>
+      </div>` : ''}
+    </div>
+  </div>`;
+}
+function txItem(t) {
+  const late = t.plan && t.date < today();
+  return `<div class="list-item" onclick="App.edit('${t.id}')">
+    <div class="when">${mdLabel(t.date)}</div>
+    <div class="what"><div>${esc(t.cat)}${t.plan ? `<span class="badge ${late ? 'late' : 'plan'}">${late ? '予定・期限切れ' : '予定'}</span>` : ''}</div>${t.memo ? `<div class="m">${esc(t.memo)}</div>` : ''}</div>
+    <div class="amt ${t.type === 'in' ? 'plus' : 'minus'}">${t.type === 'in' ? '+' : '−'}${yen(t.amount)}</div>
+    ${t.plan ? `<button class="btn sm" onclick="event.stopPropagation();App.done('${t.id}')">済にする</button>` : ''}
+  </div>`;
+}
+
+/* ---------- 収支計画（生活費から逆算） ---------- */
+function vSim() {
+  const s = S.sim;
+  const rows = list => s[list].map(it => `<div class="irow">
+      <input class="inp w3" value="${esc(it.name)}" placeholder="項目名" oninput="App.simItem('${list}','${it.id}','name',this.value)">
+      <input class="inp num amt" type="number" inputmode="numeric" value="${it.amount}" onfocus="this.select()" oninput="App.simItem('${list}','${it.id}','amount',this.value)">
+      <button class="x" onclick="App.simDel('${list}','${it.id}')" aria-label="削除">×</button></div>`).join('') +
+    `<button class="btn sm dashed" onclick="App.simAdd('${list}')">＋ 行を追加</button>`;
+  return `
+  <div class="top"><h1>収支計画</h1>
+    <select class="inp" style="width:auto;min-width:240px" onchange="App.preset(this.value)">
+      <option value="">業種のひな形を読み込む…</option>
+      ${Object.entries(PRESETS).map(([k, p]) => `<option value="${k}">${esc(p.label)}</option>`).join('')}
+    </select></div>
+  <div class="note info">「生活費をきちんと確保しながら事業を続けるには、いくらの値段で、何人のお客さまに来てもらう必要があるか」を逆算します。右側（縦画面では下）の結果は入力に合わせてすぐ変わります。</div>
+  <div class="split">
+   <div>
+    <div class="card"><h2><span class="sec-no">①</span>生活費（家に持ち帰りたいお金・月）</h2>
+      <input class="inp big" type="number" inputmode="numeric" value="${esc(s.living)}" onfocus="this.select()" oninput="App.simVal('living',this.value)">
+      <p class="muted small">家賃・食費などのほか、<b>国民健康保険・国民年金・所得税・住民税</b>の分も含めておくと安心です。</p>
+    </div>
+    <div class="card"><h2><span class="sec-no">②</span>毎月の固定費</h2>
+      <p class="muted small">売上がゼロでも毎月かかる費用です。借入金の返済もここに入れます。</p>
+      ${rows('fixed')}
+      <div class="tot-line"><span>固定費の合計</span><span class="num" id="t-fixed">${yen(sumAmt(s.fixed))}</span></div>
+    </div>
+    <div class="card"><h2><span class="sec-no">③</span>お客さま1人（1件）あたりの売値と原価</h2>
+      <div class="seg" style="margin-bottom:10px">
+        <button class="${s.gpMode === 'auto' ? 'on' : ''}" onclick="App.simMode('auto')">原価の内訳から計算</button>
+        <button class="${s.gpMode === 'manual' ? 'on' : ''}" onclick="App.simMode('manual')">粗利率を％で入れる</button>
+      </div>
+      <h3>売値（客単価）</h3>
+      ${rows('price')}
+      <div class="tot-line"><span>客単価</span><span class="num" id="t-price">${yen(sumAmt(s.price))}</span></div>
+      ${s.gpMode === 'auto' ? `<h3>原価（売るたびにかかる費用：仕入・材料・外注・手数料など）</h3>${rows('cost')}
+      <div class="tot-line"><span>原価の合計</span><span class="num" id="t-cost">${yen(sumAmt(s.cost))}</span></div>`
+      : `<label class="f">粗利益率（％）　<span class="small">同業者や業界の目安を確認しましょう</span></label>
+      <input class="inp big" type="number" inputmode="decimal" value="${esc(s.gpManual)}" onfocus="this.select()" oninput="App.simVal('gpManual',this.value)">`}
+      <div class="tot-line"><span>1人あたりの粗利（粗利率）</span><span class="num" id="t-gp"></span></div>
+    </div>
+    <div class="card"><h2><span class="sec-no">④</span>販売計画</h2>
+      <div class="grid g2" style="gap:10px">
+        <div><label class="f">月の営業日数</label><input class="inp num" type="number" inputmode="numeric" value="${esc(s.days)}" onfocus="this.select()" oninput="App.simVal('days',this.value)"></div>
+        <div><label class="f">見込める客数（月）</label><input class="inp num" type="number" inputmode="numeric" value="${esc(s.planCust)}" placeholder="例：120" onfocus="this.select()" oninput="App.simVal('planCust',this.value)"></div>
+      </div>
+      <p class="muted small">「客数 × 客単価」をどう増やすかを考えるのが、マーケティングです。</p>
+    </div>
+   </div>
+   <div><div class="sticky" id="sim-res">${simResults()}</div></div>
+  </div>`;
+}
+function simResults() {
+  const r = calcSim();
+  const head = `<div class="row end" style="margin-bottom:8px"><button class="btn sm" onclick="App.go('bp');App.bpReflect()">📄 創業計画書に反映する</button></div>`;
+  if (!r.valid) return `<div class="card"><h2>計算結果</h2><div class="note bad"><b>粗利がマイナス（または0）です。</b>このままでは売るほど赤字になります。売値を上げるか、原価を下げてください。</div></div>`;
+  const sens = [0.9, 1, 1.1, 1.2].map(k => {
+    const p = r.price * k, cost = r.price * (1 - r.gp), ug = p - cost, gp = p > 0 ? ug / p : 0;
+    const c = ug > 0 ? Math.ceil(r.need / ug) : 0;
+    return `<tr${k === 1 ? ' class="tot"' : ''}><td>${k === 1 ? 'いまの単価' : (k > 1 ? '+' : '') + Math.round((k - 1) * 100) + '%'}</td><td class="num">${yen(p)}</td><td class="num">${pct(gp, 0)}</td><td class="num">${ug > 0 ? comma(c) + '人' : '—'}</td><td class="num">${ug > 0 && r.days ? (c / r.days).toFixed(1) + '人' : '—'}</td></tr>`;
+  }).join('');
+  const warns = [];
+  if (r.gp < 0.2) warns.push('<div class="note warn">粗利率が20%未満と低めです。薄利多売になりやすいため、広告費のかけすぎに注意しましょう。</div>');
+  if (r.days && r.perDay > 30) warns.push(`<div class="note warn">1日に${r.perDay.toFixed(1)}人の対応が必要です。ひとりで回せるか、人を雇うか、単価を上げられないか検討しましょう。</div>`);
+  if (r.price <= 0) warns.push('<div class="note warn">客単価を入れると、必要な客数が計算されます。</div>');
+  let plan = '';
+  if (r.planCust > 0 && r.price > 0) {
+    plan = `<h3>販売計画との比較</h3><div class="stmt">
+      <div class="ln"><span>販売計画の売上（${comma(r.planCust)}人 × ${yen(r.price)}）</span><span class="num">${yen(r.planSales)}</span></div>
+      <div class="ln t"><span>目標売上との差</span><span class="num ${r.diff >= 0 ? 'plus' : 'minus'}">${r.diff >= 0 ? '+' : ''}${yen(r.diff)}</span></div></div>
+      ${r.diff >= 0 ? '<div class="note ok">目標を達成できる計画です。</div>' : `<div class="note warn">あと月${comma(Math.ceil(-r.diff / r.price))}人、または客単価を${yen(Math.ceil(r.target / r.planCust))}にすると目標に届きます。</div>`}`;
+  }
+  return `${head}
+  <div class="hero"><div class="l">目標売上（月）</div><div class="v">${yen(r.target)}</div><div class="s">年間 ${yen(r.target * 12)}　／　必要なお客さま 月${comma(r.cust)}人${r.days ? `（1日あたり${r.perDay.toFixed(1)}人）` : ''}</div></div>
+  <div class="card"><h2>逆算のしくみ</h2>
+    <div class="stmt">
+      <div class="ln"><span>① 生活費</span><span class="num">${yen(r.living)}</span></div>
+      <div class="ln"><span>② 固定費</span><span class="num">${yen(r.fixed)}</span></div>
+      <div class="ln t"><span>必要な粗利益（①＋②）</span><span class="num">${yen(r.need)}</span></div>
+      <div class="ln"><span>③ 粗利率</span><span class="num">${pct(r.gp)}</span></div>
+      <div class="ln t big"><span>目標売上（必要な粗利 ÷ 粗利率）</span><span class="num">${yen(r.target)}</span></div>
+      <div class="ln in"><span>うち 仕入・原価の目安</span><span class="num">${yen(r.target - r.need)}</span></div>
+    </div>
+    <div class="kpis flat" style="margin-top:12px">
+      <div class="kpi"><div class="l">損益分岐点売上</div><div class="v">${yen(r.bep)}</div><div class="s">生活費0円なら赤字にならない売上</div></div>
+      <div class="kpi"><div class="l">損益分岐の客数</div><div class="v">${comma(r.bepCust)}<small>人/月</small></div></div>
+    </div>
+    ${plan}
+    <h3>客単価を変えたら？（必要な客数）</h3>
+    <div class="tbl-wrap"><table><thead><tr><th>単価</th><th class="num">客単価</th><th class="num">粗利率</th><th class="num">必要客数/月</th><th class="num">1日あたり</th></tr></thead><tbody>${sens}</tbody></table></div>
+    <p class="muted small">1人あたりの原価（円）は変わらないものとして計算しています。</p>
+    ${warns.join('')}
+  </div>`;
+}
+function updateSim() {
+  const s = S.sim, r = calcSim();
+  if ($('t-fixed')) $('t-fixed').textContent = yen(sumAmt(s.fixed));
+  if ($('t-price')) $('t-price').textContent = yen(sumAmt(s.price));
+  if ($('t-cost')) $('t-cost').textContent = yen(sumAmt(s.cost));
+  if ($('t-gp')) { $('t-gp').textContent = yen(r.unitGp) + '（' + pct(r.gp) + '）'; $('t-gp').className = 'num ' + (r.valid ? '' : 'minus'); }
+  if ($('sim-res')) $('sim-res').innerHTML = simResults();
+}
+
+/* ---------- 入出金 ---------- */
+function newRec(type) { const c = type === 'out' ? '仕入' : '売上'; return {type: type || 'in', date: today(), cat: c, amount: '', memo: '', plan: false, repeat: 0}; }
+function vRec() {
+  const sub = [['form', UI.editId ? '✏️ 修正' : '＋ 記録する'], ['list', '一覧']];
+  return `<div class="top"><h1>入出金</h1></div>
+  <div class="subtabs">${sub.map(([k, l]) => `<button class="${UI.recSub === k ? 'on' : ''}" onclick="App.recSub('${k}')">${l}</button>`).join('')}</div>
+  ${UI.recSub === 'form' ? vRecForm() : vRecList()}`;
+}
+function vRecForm() {
+  if (!UI.rec) UI.rec = newRec('in');
+  const r = UI.rec, cats = r.type === 'in' ? IN_CATS : OUT_CATS;
+  const groups = {};
+  cats.forEach(([c, k]) => (groups[k] = groups[k] || []).push(c));
+  const chips = Object.entries(groups).map(([k, list]) => `<div class="cls">${CLASS_LABEL[k]}</div>` + list.map(c => `<button class="${r.cat === c ? 'on' : ''}" onclick="App.recCat('${c}')">${c}</button>`).join('')).join('');
+  return `<div class="grid g2">
+  <div class="card">
+    <div class="kind"><button class="in ${r.type === 'in' ? 'on' : ''}" onclick="App.recType('in')">＋ 入金</button><button class="out ${r.type === 'out' ? 'on' : ''}" onclick="App.recType('out')">－ 出金</button></div>
+    <label class="f">金額（円）</label>
+    <input class="inp big" id="r-amount" type="number" inputmode="numeric" min="1" value="${esc(r.amount)}" placeholder="0" oninput="UI.rec.amount=this.value">
+    <label class="f">日付</label>
+    <input class="inp" type="date" value="${esc(r.date)}" onchange="App.recDate(this.value)">
+    <label class="f">内容（カテゴリ）</label>
+    <div class="chips">${chips}</div>
+    <label class="f">メモ（取引先・品名など）</label>
+    <input class="inp" value="${esc(r.memo)}" placeholder="例：A社 11月分請求" oninput="UI.rec.memo=this.value">
+  </div>
+  <div class="card">
+    <h2>予定として登録</h2>
+    <label class="row" style="min-height:48px;cursor:pointer"><input type="checkbox" style="width:24px;height:24px" ${r.plan ? 'checked' : ''} onchange="UI.rec.plan=this.checked;render(true)"> <span><b>まだ先の予定（見込み）</b><br><span class="muted small">入金予定・支払予定を入れると、資金繰り表で先のお金の動きがわかります</span></span></label>
+    ${UI.editId ? '' : `<label class="f">毎月くり返す（家賃・返済など）</label>
+    <select class="inp" onchange="UI.rec.repeat=Number(this.value)">
+      ${[[0, 'くり返さない'], [2, '今後2か月分も予定に入れる'], [5, '今後5か月分も予定に入れる'], [11, '今後11か月分も予定に入れる（1年分）']].map(([v, l]) => `<option value="${v}" ${r.repeat === v ? 'selected' : ''}>${l}</option>`).join('')}
+    </select>
+    <p class="muted small">2か月目からは「予定」として登録されます。</p>`}
+    <div class="row" style="margin-top:16px">
+      <button class="btn pri wide" onclick="App.recSave()">${UI.editId ? '修正を保存' : '登録する'}</button>
+      ${UI.editId ? `<button class="btn" onclick="App.recCancel()">やめる</button><button class="btn danger" onclick="App.recDel()">削除</button>` : ''}
+    </div>
+  </div></div>`;
+}
+function vRecList() {
+  const ym = UI.listYM, f = UI.listFilter;
+  const list = S.tx.filter(t => t.date.slice(0, 7) === ym && (f === 'all' || (f === 'plan' ? t.plan : !t.plan)))
+    .sort((a, b) => b.date.localeCompare(a.date) || String(b.id).localeCompare(String(a.id)));
+  const act = monthAgg(ym, false), all = monthAgg(ym, true);
+  const inA = act.sales + act.other + act.loan + act.capital, outA = act.var + act.fixed + act.capex + act.repay + act.owner;
+  const inP = all.sales + all.other + all.loan + all.capital, outP = all.var + all.fixed + all.capex + all.repay + all.owner;
+  const late = overduePlans().length;
+  return `<div class="card">
+    <div class="row" style="justify-content:space-between">
+      <div class="monthnav"><button class="btn sm" onclick="App.listMonth(-1)">◀</button><b>${ymLabel(ym)}</b><button class="btn sm" onclick="App.listMonth(1)">▶</button>
+        ${ym !== curYM() ? `<button class="btn sm ghost" onclick="App.listMonth(0)">今月へ</button>` : ''}</div>
+      <div class="seg" style="flex:0 1 320px">${[['all', 'すべて'], ['act', '実績'], ['plan', '予定']].map(([k, l]) => `<button class="${f === k ? 'on' : ''}" onclick="App.listFilter('${k}')">${l}</button>`).join('')}</div>
+    </div>
+    ${late ? `<div class="note warn">日付が過ぎた予定が全部で${late}件あります。<button class="btn sm" onclick="App.lateList()">表示する</button></div>` : ''}
+    <div class="kpis flat" style="margin-top:12px">
+      <div class="kpi"><div class="l">入金（実績）</div><div class="v plus">${yen(inA)}</div>${inP !== inA ? `<div class="s">予定を含めると ${yen(inP)}</div>` : ''}</div>
+      <div class="kpi"><div class="l">出金（実績）</div><div class="v minus">${yen(outA)}</div>${outP !== outA ? `<div class="s">予定を含めると ${yen(outP)}</div>` : ''}</div>
+      <div class="kpi"><div class="l">差引（実績）</div><div class="v ${inA - outA < 0 ? 'minus' : ''}">${yen(inA - outA)}</div></div>
+    </div>
+    ${list.length ? list.map(txItem).join('') : '<div class="empty">この月の記録はありません</div>'}
+    <p class="muted small">行をタップすると修正・削除できます。</p>
+  </div>`;
+}
+
+/* ---------- 資金繰り表 ---------- */
+function vCash() {
+  const all = cashTable(), cur = curYM();
+  const ci = all.findIndex(c => c.cur);
+  const cols = all.slice(Math.max(0, ci - 5));
+  const short = cols.find(c => c.fut && c.end < 0);
+  const avgOut = (() => { const past = all.filter(c => !c.fut && c.outSum > 0).slice(-3); return past.length ? past.reduce((a, c) => a + c.outSum, 0) / past.length : 0; })();
+  const low = !short && avgOut > 0 ? cols.find(c => c.fut && c.end < avgOut) : null;
+  const R = (label, key, cls = '') => `<tr class="${cls}"><td class="lbl">${label}</td>${cols.map(c => `<td class="num ${c.fut ? 'fut' : ''} ${key === 'end' && c.end < 0 ? 'minus' : ''}">${c[key] ? comma(c[key]) : (key === 'end' || key === 'start' ? '0' : '')}</td>`).join('')}</tr>`;
+  const G = l => `<tr class="grp"><td class="lbl">${l}</td>${cols.map(c => `<td class="${c.fut ? 'fut' : ''}"></td>`).join('')}</tr>`;
+  const chart = chartSVG({labels: cols.map(c => mLabel(c.ym)), hl: cols.findIndex(c => c.cur),
+    bars: [{name: '入金', color: '#5b8fd9', data: cols.map(c => c.inSum)}, {name: '出金', color: '#e8955a', data: cols.map(c => c.outSum)}],
+    lines: [{name: '月末残高', color: '#1f7a63', data: cols.map(c => c.end)}]});
+  return `<div class="top"><h1>資金繰り</h1><div class="row"><button class="btn sm" onclick="App.quick('in',true)">＋ 入金予定</button><button class="btn sm" onclick="App.quick('out',true)">＋ 支払予定</button></div></div>
+  ${short ? `<div class="note bad"><b>${ymLabel(short.ym)}末に残高が ${yen(short.end)} になる見込みです。</b>入金を早める・支払いを延ばす・借入や自己資金の追加を検討しましょう。</div>` : ''}
+  ${low ? `<div class="note warn">${ymLabel(low.ym)}末の残高見込み（${yen(low.end)}）が、ふだんの1か月分の支出（約${yen(avgOut)}）を下回ります。</div>` : ''}
+  ${!short && !low && S.tx.length ? '<div class="note ok">登録されている予定の範囲では、資金が足りなくなる月はありません。</div>' : ''}
+  <div class="card"><h2>入金・出金と月末残高</h2>${chart}<p class="muted small">色のついた背景が今月です。今月以降は「予定」も含めた見込みです。</p></div>
+  <div class="card"><h2>資金繰り表 <span class="muted small">（単位：円）</span></h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th class="lbl" style="position:sticky;left:0;z-index:2">項目</th>${cols.map(c => `<th class="num ${c.fut ? 'fut' : ''}">${mLabel(c.ym)}<br><span class="small">${c.cur ? '今月見込' : c.fut ? '見込み' : '実績'}</span></th>`).join('')}</tr></thead>
+      <tbody>
+        ${R('前月からの繰越', 'start', 'tot')}
+        ${G('入金')}${R('売上', 'sales')}${R('その他の入金', 'other')}${R('借入', 'loan')}${R('自己資金', 'capital')}${R('入金 計', 'inSum', 'tot')}
+        ${G('出金')}${R('仕入・外注など', 'var')}${R('固定費（経費）', 'fixed')}${R('設備の購入', 'capex')}${R('借入の返済', 'repay')}${R('生活費・税金', 'owner')}${R('出金 計', 'outSum', 'tot')}
+        ${R('差引（入金−出金）', 'net')}${R('翌月への繰越', 'end', 'tot')}
+      </tbody></table></div>
+    <p class="muted small">開始時の残高：${yen(num(S.profile.openCash))}（${esc(jpDate(S.profile.openDate))}時点）　<button class="btn sm ghost" onclick="App.go('set')">変更する</button></p>
+    <div class="row"><button class="btn sm" onclick="App.printCash()">🖨 資金繰り表をPDFで保存</button></div>
+  </div>
+  <div class="card"><h2>💡 資金繰りのコツ</h2>${TIPS.slice(0, 4).map(t => `<div class="tip">${t}</div>`).join('')}</div>`;
+}
+
+/* ---------- 経営分析 ---------- */
+function anaMonths() {
+  if (UI.anaPeriod === 'last12') { const c = curYM(); return Array.from({length: 12}, (_, i) => addMonth(c, i - 11)); }
+  return Array.from({length: 12}, (_, i) => UI.anaPeriod + '-' + pad(i + 1));
+}
+function vAna() {
+  const years = [...new Set(S.tx.map(t => t.date.slice(0, 4)).concat([String(new Date().getFullYear())]))].sort().reverse();
+  const months = anaMonths(), sim = calcSim();
+  const data = months.map(m => { const a = monthAgg(m, false); const gpv = a.sales - a.var; const op = gpv - a.fixed; const h = num(S.hours[m]); return {m, ...a, gpv, op, h, has: a.sales + a.var + a.fixed > 0}; });
+  const act = data.filter(d => d.has);
+  const T = k => act.reduce((s, d) => s + d[k], 0);
+  const sales = T('sales'), vr = T('var'), fx = T('fixed'), gpv = sales - vr, op = gpv - fx, hrs = act.reduce((s, d) => s + d.h, 0);
+  const gpr = sales > 0 ? gpv / sales : 0;
+  const avgFx = act.length ? fx / act.length : 0;
+  const bep = gpr > 0 ? avgFx / gpr : 0;
+  const hourly = hrs > 0 ? op / hrs : 0;
+  const reach = sim.target > 0 ? act.filter(d => d.sales >= sim.target).length : 0;
+  const cats = {}; act.forEach(d => Object.entries(d.byCat).forEach(([k, v]) => cats[k] = (cats[k] || 0) + v));
+  const catList = Object.entries(cats).sort((a, b) => b[1] - a[1]); const catMax = catList.length ? catList[0][1] : 1;
+  const fixedCats = new Set(OUT_CATS.filter(c => c[1] === 'fixed').map(c => c[0]));
+  // 診断
+  const adv = [];
+  if (!act.length) adv.push('<div class="note">入出金を記録すると、ここに分析が表示されます。</div>');
+  else {
+    const margin = sales > 0 ? op / sales : 0;
+    if (sales === 0) adv.push('<div class="note warn">この期間は売上の記録がありません。</div>');
+    else if (margin < 0) adv.push(`<div class="note bad"><b>経費が売上を上回っています（利益率 ${pct(margin)}）。</b>単価・客数・固定費のどこを変えるか、収支計画で試算してみましょう。</div>`);
+    else if (margin < 0.1) adv.push(`<div class="note warn"><b>利益率が低めです（${pct(margin)}）。</b>価格の見直しか、原価・経費の削減を考えましょう。</div>`);
+    else if (margin > 0.3) adv.push(`<div class="note ok"><b>しっかり利益が出ています（利益率 ${pct(margin)}）。</b>税金の支払いに備えて取り分けつつ、次の投資も考えましょう。</div>`);
+    if (sim.valid && sales > 0 && Math.abs(gpr - sim.gp) > 0.05) adv.push(`<div class="note ${gpr < sim.gp ? 'warn' : 'ok'}">実際の粗利率は <b>${pct(gpr)}</b>、計画は ${pct(sim.gp)} です。${gpr < sim.gp ? '原価が計画より高くなっていないか確認しましょう。' : '計画より良い粗利率です。'}</div>`);
+    if (sim.valid && act.length && avgFx > sim.fixed * 1.1) adv.push(`<div class="note warn">固定費が月平均 <b>${yen(avgFx)}</b> と、計画（${yen(sim.fixed)}）より多くなっています。</div>`);
+    if (sales > 0 && fx / sales > 0.5) adv.push('<div class="note warn">売上の半分以上が固定費で消えています。サブスク・家賃など毎月の費用を見直す余地がないか確認しましょう。</div>');
+    if (hrs > 0 && hourly < 1500) adv.push(`<div class="note info">時間あたりの利益が <b>${yen(hourly)}</b> と低めです。時間のかかる作業の見直し・外注・値上げを検討しましょう。</div>`);
+    if (sim.target > 0) adv.push(`<div class="note">目標売上（${yen(sim.target)}）を達成した月：<b>${reach}か月</b> ／ 記録のある${act.length}か月</div>`);
+    if (adv.length === 0) adv.push('<div class="note ok">特に気になる点はありません。この調子で記録を続けましょう。</div>');
+  }
+  const chart = chartSVG({labels: months.map(mLabel),
+    bars: [{name: '売上', color: '#5b8fd9', data: data.map(d => d.sales)}],
+    lines: [{name: '利益（売上−経費）', color: '#1f7a63', data: data.map(d => d.has ? d.op : null)}].concat(sim.target > 0 ? [{name: '目標売上', color: '#e0782b', dash: true, data: data.map(() => sim.target)}] : [])});
+  return `<div class="top"><h1>経営分析</h1>
+    <select class="inp" style="width:auto" onchange="UI.anaPeriod=this.value;render()">
+      <option value="last12" ${UI.anaPeriod === 'last12' ? 'selected' : ''}>直近12か月</option>
+      ${years.map(y => `<option value="${y}" ${UI.anaPeriod === y ? 'selected' : ''}>${y}年</option>`).join('')}
+    </select></div>
+  <div class="kpis">
+    <div class="kpi"><div class="l">売上合計</div><div class="v">${yen(sales)}</div><div class="s">記録のある${act.length}か月分</div></div>
+    <div class="kpi"><div class="l">利益（利益率）</div><div class="v ${op < 0 ? 'minus' : 'plus'}">${yen(op)}</div><div class="s">利益率 ${sales > 0 ? pct(op / sales) : '—'}</div></div>
+    <div class="kpi"><div class="l">粗利率</div><div class="v">${sales > 0 ? pct(gpr) : '—'}</div><div class="s">${sim.valid ? '計画 ' + pct(sim.gp) : ''}</div></div>
+    <div class="kpi"><div class="l">損益分岐点売上（月）</div><div class="v">${yen(bep)}</div><div class="s">赤字にならないライン</div></div>
+    <div class="kpi"><div class="l">時間あたりの利益</div><div class="v">${hrs > 0 ? yen(hourly) : '—'}</div><div class="s">下の表に稼働時間を入れると計算</div></div>
+  </div>
+  <div class="card"><h2>売上・利益の推移</h2>${chart}</div>
+  <div class="card"><h2>月ごとの数字</h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>月</th><th class="num">売上</th><th class="num">変動費</th><th class="num">粗利</th><th class="num">固定費</th><th class="num">利益</th><th class="num">稼働時間</th><th class="num">時間あたり</th>${sim.target > 0 ? '<th class="num">目標比</th>' : ''}</tr></thead>
+      <tbody>${data.map(d => `<tr>
+        <td style="white-space:nowrap">${ymLabel(d.m)}</td>
+        <td class="num">${d.has ? comma(d.sales) : ''}</td><td class="num">${d.has ? comma(d.var) : ''}</td><td class="num">${d.has ? comma(d.gpv) : ''}</td>
+        <td class="num">${d.has ? comma(d.fixed) : ''}</td><td class="num ${d.op < 0 ? 'minus' : ''}">${d.has ? comma(d.op) : ''}</td>
+        <td class="num"><input class="inp num" style="min-height:38px;padding:4px 8px;width:86px" type="number" inputmode="decimal" value="${S.hours[d.m] ?? ''}" placeholder="時間" onchange="App.hours('${d.m}',this.value)"></td>
+        <td class="num">${d.h > 0 && d.has ? yen(d.op / d.h) : ''}</td>
+        ${sim.target > 0 ? `<td class="num">${d.has ? Math.round(d.sales / sim.target * 100) + '%' : ''}</td>` : ''}</tr>`).join('')}
+      <tr class="tot"><td>合計</td><td class="num">${comma(sales)}</td><td class="num">${comma(vr)}</td><td class="num">${comma(gpv)}</td><td class="num">${comma(fx)}</td><td class="num">${comma(op)}</td><td class="num">${hrs || ''}</td><td class="num">${hrs > 0 ? yen(hourly) : ''}</td>${sim.target > 0 ? '<td></td>' : ''}</tr>
+      </tbody></table></div>
+    <p class="muted small">利益＝売上−変動費−固定費（生活費・税金・借入の返済・設備の購入は含みません）。数字は「入出金」の実績から自動で集計されます。</p>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h2>経費の内訳</h2>${catList.length ? catList.map(([k, v]) => `<div class="hbar"><span>${esc(k)}</span><div class="bar" style="width:${Math.max(2, v / catMax * 100)}%;background:${fixedCats.has(k) ? '#e8955a' : '#9b7bd1'}"></div><span class="num">${yen(v)}</span></div>`).join('') + '<div class="legend"><span><i style="background:#9b7bd1"></i>変動費</span><span><i style="background:#e8955a"></i>固定費</span></div>' : '<div class="empty">経費の記録がありません</div>'}</div>
+    <div class="card"><h2>かんたん経営診断</h2>${adv.join('')}</div>
+  </div>`;
+}
+
+/* ---------- 創業計画書 ---------- */
+const ROWDEF = {
+  career: [['ym', '年月（例：2015年4月）', 'w1'], ['text', '内容（例：〇〇株式会社に入社、営業を担当）', 'w3']],
+  products: [['name', '商品・サービスの内容', 'w3'], ['share', '売上シェア（％）', 'w1', 1]],
+  partners: [['kind', '', 'w1', 0, ['販売先', '仕入先', '外注先']], ['name', '取引先名', 'w2'], ['addr', '所在地（市区町村）', 'w1'], ['share', 'シェア（％）', 'w1', 1], ['terms', '条件（例：末日〆翌月末回収）', 'w2']],
+  loans: [['lender', '借入先', 'w2'], ['use', '使いみち（住宅・車など）', 'w2'], ['balance', '残高（円）', 'w1', 1], ['annual', '年間返済額（円）', 'w1', 1]],
+  equip: [['name', '内容（例：店舗の内装工事）', 'w3'], ['vendor', '見積先', 'w2'], ['amount', '金額（円）', 'w1', 1]],
+  work: [['name', '内容（例：商品の仕入、当面の経費）', 'w3'], ['amount', '金額（円）', 'w1', 1]]
+};
+const getPath = (o, p) => p.split('.').reduce((a, k) => a == null ? a : a[k], o);
+function setPath(o, p, v) { const ks = p.split('.'); const last = ks.pop(); const t = ks.reduce((a, k) => a[k], o); t[last] = v; }
+const bpv = p => getPath(S.bp, p) ?? '';
+const bpArea = (p, label, ph, rows = 3, help = '') => `<label class="f">${label}</label>${help ? `<div class="muted small" style="margin:-2px 0 4px">${help}</div>` : ''}<textarea class="inp" rows="${rows}" placeholder="${esc(ph)}" oninput="App.bpSet('${p}',this.value)">${esc(bpv(p))}</textarea>`;
+const bpIn = (p, ph, isNum, cls = '') => `<input class="inp ${isNum ? 'num' : ''} ${cls}" ${isNum ? 'type="number" inputmode="numeric"' : ''} value="${esc(bpv(p))}" placeholder="${esc(ph)}" oninput="App.bpSet('${p}',this.value)">`;
+function bpRows(list) {
+  return S.bp[list].map((r, i) => `<div class="irow">${ROWDEF[list].map(([k, ph, cls, isNum, opts]) => opts
+    ? `<select class="inp ${cls}" onchange="App.bpSet('${list}.${i}.${k}',this.value)">${opts.map(o => `<option ${r[k] === o ? 'selected' : ''}>${o}</option>`).join('')}</select>`
+    : bpIn(`${list}.${i}.${k}`, ph, isNum, cls)).join('')}<button class="x" onclick="App.bpDel('${list}',${i})" aria-label="削除">×</button></div>`).join('') +
+    `<button class="btn sm dashed" onclick="App.bpAdd('${list}')">＋ 行を追加</button>`;
+}
+function vBp() {
+  const b = S.bp;
+  const oRow = (k, l) => `<tr><td>${l}</td><td>${bpIn('outlook.start.' + k, '0', 1)}</td><td>${bpIn('outlook.later.' + k, '0', 1)}</td></tr>`;
+  return `<div class="top"><h1>創業計画書</h1><span class="muted small">入力はその場で自動保存されます</span></div>
+  <div class="bar-tools">
+    <button class="btn blue" onclick="App.printBp()">🖨 PDFで保存・印刷</button>
+    <button class="btn" onclick="App.bpReflect()">📐 収支計画の数字を反映</button>
+    <button class="btn" onclick="App.bpCheck()">✅ 記入チェック</button>
+  </div>
+  <div id="bp-check"></div>
+  <div class="card"><h2>基本情報</h2>
+    <div class="grid g2" style="gap:0 14px">
+      <div><label class="f">屋号・お店の名前</label><input class="inp" value="${esc(S.profile.name)}" placeholder="例：山田デザイン事務所" oninput="App.prof('name',this.value)"></div>
+      <div><label class="f">お名前</label><input class="inp" value="${esc(S.profile.owner)}" placeholder="例：山田 太郎" oninput="App.prof('owner',this.value)"></div>
+      <div><label class="f">事業の内容（業種）</label><input class="inp" value="${esc(S.profile.business)}" placeholder="例：ホームページ制作業" oninput="App.prof('business',this.value)"></div>
+      <div><label class="f">開業日（予定）</label><input class="inp" type="date" value="${esc(S.profile.start)}" onchange="App.prof('start',this.value)"></div>
+      <div><label class="f">作成日</label><input class="inp" type="date" value="${esc(b.created)}" onchange="App.bpSet('created',this.value)"></div>
+    </div>
+  </div>
+  <div class="card"><h2><span class="sec-no">1</span>創業の目的・動機</h2>
+    ${bpArea('motive', '', '例：会社員として10年間ホームページ制作に携わる中で、地域の中小企業がITを活用しきれていないと感じ、身近な相談相手になりたいと考えた。', 5)}
+    <div class="muted small">なぜこの事業を、なぜ今、なぜ自分がやるのかを書きましょう。</div>
+  </div>
+  <div class="card"><h2><span class="sec-no">2</span>経営者の略歴など</h2>
+    <label class="f">略歴（勤務先・担当業務・役職・身につけた技能など）</label>${bpRows('career')}
+    <label class="f">過去の事業経験</label>
+    <select class="inp" onchange="App.bpSet('exp',this.value)">
+      ${[['none', '事業を経営していたことはない'], ['now', '事業を経営していたことがあり、現在もその事業を続けている'], ['closed', '事業を経営していたことがあるが、すでにその事業をやめている']].map(([v, l]) => `<option value="${v}" ${b.exp === v ? 'selected' : ''}>${l}</option>`).join('')}
+    </select>
+    <div class="grid g2" style="gap:0 14px">
+      <div><label class="f">取得資格</label>${bpIn('licenses', '例：普通自動車免許、基本情報技術者')}</div>
+      <div><label class="f">知的財産権など</label>${bpIn('ip', '例：特になし／商標登録申請中')}</div>
+    </div>
+  </div>
+  <div class="card"><h2><span class="sec-no">3</span>取り扱う商品・サービス</h2>
+    <label class="f">商品・サービスの内容と売上シェア</label>${bpRows('products')}
+    ${bpArea('salesPoint', 'セールスポイント（あなたの強み・選ばれる理由）', '例：元エンジニアならではの技術力と、専門用語を使わないていねいな説明。制作後の更新サポートまで一人で対応できる。', 3)}
+    ${bpArea('target', '販売ターゲット・販売戦略（誰に・どうやって売るか）', '例：ターゲットは市内の従業員10人以下の企業。商工会の紹介と、既存の人脈からの紹介を中心に、ブログで事例を発信する。', 3)}
+    ${bpArea('competition', '競合・市場など、事業を取り巻く状況', '例：市内に同業者は5社あるが、更新サポートまで請け負うところは少ない。中小企業のIT化ニーズは高まっている。', 3)}
+  </div>
+  <div class="card"><h2><span class="sec-no">4</span>取引先・取引関係</h2>${bpRows('partners')}</div>
+  <div class="card"><h2><span class="sec-no">5</span>従業員</h2>
+    <div class="grid g2" style="gap:0 14px">
+      <div><label class="f">常勤の役員の人数（法人の場合）</label>${bpIn('staff.officers', '人', 1)}</div>
+      <div><label class="f">従業員数（3か月以上働く予定の人）</label>${bpIn('staff.employees', '人', 1)}</div>
+      <div><label class="f">うち 家族従業員</label>${bpIn('staff.family', '人', 1)}</div>
+      <div><label class="f">うち パート従業員</label>${bpIn('staff.part', '人', 1)}</div>
+    </div>
+  </div>
+  <div class="card"><h2><span class="sec-no">6</span>お借入の状況（事業主個人の借入：住宅・車・カードローンなど）</h2>${bpRows('loans')}</div>
+  <div class="card"><h2><span class="sec-no">7</span>必要な資金と調達方法</h2>
+    <div class="grid g2">
+      <div><h3>必要な資金</h3>
+        <label class="f">設備資金（店舗・機械・車・備品など）</label>${bpRows('equip')}
+        <label class="f">運転資金（仕入・経費の支払いなど）</label>${bpRows('work')}
+        <div class="tot-line"><span>必要な資金 合計</span><span class="num" id="b-need"></span></div></div>
+      <div><h3>調達の方法</h3>
+        <label class="f">自己資金</label>${bpIn('funds.own', '円', 1)}
+        <label class="f">親・兄弟・知人などからの借入</label><div class="irow">${bpIn('funds.family', '円', 1, 'w1')}${bpIn('funds.familyNote', '内訳・返済方法', 0, 'w2')}</div>
+        <label class="f">金融機関からの借入</label><div class="irow">${bpIn('funds.bank', '円', 1, 'w1')}${bpIn('funds.bankNote', '借入先・返済期間など', 0, 'w2')}</div>
+        <label class="f">その他（補助金など）</label><div class="irow">${bpIn('funds.other', '円', 1, 'w1')}${bpIn('funds.otherNote', '内容', 0, 'w2')}</div>
+        <div class="tot-line"><span>調達 合計</span><span class="num" id="b-fund"></span></div></div>
+    </div>
+    <div id="b-match"></div>
+  </div>
+  <div class="card"><h2><span class="sec-no">8</span>事業の見通し（月平均・円）</h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>項目</th><th>創業当初</th><th>1年後（軌道に乗った後）</th></tr></thead>
+      <tbody>
+        ${oRow('sales', '売上高 ①')}${oRow('cost', '売上原価 ②（仕入など）')}
+        <tr class="grp"><td colspan="3">経費</td></tr>
+        ${oRow('staff', '　人件費（従業員分）')}${oRow('rent', '　家賃')}${oRow('interest', '　支払利息')}${oRow('other', '　その他')}
+        <tr class="tot"><td>経費 合計 ③</td><td class="num" id="o-exp-start"></td><td class="num" id="o-exp-later"></td></tr>
+        <tr class="tot"><td>利益 ①−②−③</td><td class="num" id="o-pro-start"></td><td class="num" id="o-pro-later"></td></tr>
+      </tbody></table></div>
+    <p class="muted small">個人事業の場合、事業主本人の分は人件費に入れません（利益から生活費をまかないます）。</p>
+    ${bpArea('basis', '数字の根拠（なぜその売上になるのか）', '例：創業当初：客単価5,000円×月80人＝40万円。1年後：紹介とリピートで月120人を見込む。原価率40%は前職の経験から。', 4)}
+  </div>
+  <div class="card"><h2><span class="sec-no">9</span>自由記述（アピールしたいこと・困っていることなど）</h2>
+    ${bpArea('extra', '', '例：開業前から3社の見込み客と打ち合わせを進めている。', 4)}
+  </div>
+  <div class="row" style="margin-bottom:20px"><button class="btn blue" onclick="App.printBp()">🖨 PDFで保存・印刷</button></div>`;
+}
+function bpCalc() {
+  const b = S.bp;
+  const need = sumAmt(b.equip) + sumAmt(b.work);
+  const fund = num(b.funds.own) + num(b.funds.family) + num(b.funds.bank) + num(b.funds.other);
+  const o = k => { const x = b.outlook[k]; const exp = num(x.staff) + num(x.rent) + num(x.interest) + num(x.other); return {exp, pro: num(x.sales) - num(x.cost) - exp}; };
+  return {need, fund, start: o('start'), later: o('later')};
+}
+function updateBpCalc() {
+  if (!$('b-need')) return;
+  const c = bpCalc();
+  $('b-need').textContent = yen(c.need); $('b-fund').textContent = yen(c.fund);
+  $('b-match').innerHTML = c.need === 0 && c.fund === 0 ? '' : c.need === c.fund ? '<div class="note ok">必要な資金と調達の合計が一致しています。</div>' : `<div class="note warn">必要な資金と調達の合計が一致していません（差額 ${yen(c.fund - c.need)}）。同じ金額になるようにしましょう。</div>`;
+  ['start', 'later'].forEach(k => { $('o-exp-' + k).textContent = comma(c[k].exp); $('o-pro-' + k).textContent = comma(c[k].pro); $('o-pro-' + k).className = 'num ' + (c[k].pro < 0 ? 'minus' : ''); });
+}
+function bpCheckList() {
+  const b = S.bp, c = bpCalc(), sim = calcSim(), out = [];
+  const empty = (v, l) => { if (!String(v || '').trim()) out.push(['warn', `「${l}」がまだ空欄です`]); };
+  empty(S.profile.name || S.profile.owner, '屋号またはお名前');
+  empty(b.motive, '1. 創業の目的・動機');
+  if (!b.career.some(r => r.text.trim())) out.push(['warn', '「2. 経営者の略歴」がまだ空欄です']);
+  if (!b.products.some(r => r.name.trim())) out.push(['warn', '「3. 商品・サービスの内容」がまだ空欄です']);
+  empty(b.salesPoint, 'セールスポイント'); empty(b.target, '販売ターゲット・販売戦略');
+  if (c.need === 0) out.push(['warn', '「7. 必要な資金」がまだ入っていません']);
+  else if (c.need !== c.fund) out.push(['bad', `必要な資金（${yen(c.need)}）と調達の合計（${yen(c.fund)}）が一致していません`]);
+  else { const r = (num(b.funds.own)) / c.need; out.push(['info', `自己資金は必要な資金の ${pct(r, 0)} です。自己資金の割合や、それをどう貯めてきたかは融資の審査で重視されます。`]); }
+  if (num(b.outlook.later.sales) === 0) out.push(['warn', '「8. 事業の見通し」の売上が入っていません（「収支計画の数字を反映」が便利です）']);
+  ['start', 'later'].forEach(k => { if (num(b.outlook[k].sales) > 0 && c[k].pro < 0) out.push(['bad', `${k === 'start' ? '創業当初' : '1年後'}の利益がマイナスです`]); });
+  const repay = b.loans.reduce((a, l) => a + num(l.annual), 0) / 12;
+  if (num(b.outlook.later.sales) > 0 && sim.living > 0 && c.later.pro < sim.living + repay)
+    out.push(['warn', `1年後の利益（月${yen(c.later.pro)}）で、生活費（月${yen(sim.living)}）${repay ? `と個人の借入返済（月${yen(repay)}）` : ''}をまかなえるか確認しましょう。新しく借りる場合はその返済も必要です。`]);
+  empty(b.basis, '数字の根拠');
+  if (!out.some(x => x[0] === 'bad' || x[0] === 'warn')) out.unshift(['ok', '主な項目は記入済みです。PDFで保存して見直してみましょう。']);
+  return out;
+}
+
+/* ---------- 設定 ---------- */
+function vSet() {
+  const p = S.profile;
+  return `<div class="top"><h1>設定・データ</h1></div>
+  <div class="grid g2">
+  <div class="card"><h2>事業の情報</h2>
+    <label class="f">屋号・お店の名前</label><input class="inp" value="${esc(p.name)}" oninput="App.prof('name',this.value)">
+    <label class="f">お名前</label><input class="inp" value="${esc(p.owner)}" oninput="App.prof('owner',this.value)">
+    <label class="f">事業の内容（業種）</label><input class="inp" value="${esc(p.business)}" oninput="App.prof('business',this.value)">
+    <label class="f">開業日（予定）</label><input class="inp" type="date" value="${esc(p.start)}" onchange="App.prof('start',this.value)">
+  </div>
+  <div class="card"><h2>開始時の残高</h2>
+    <p class="muted small">記録を始める日の、事業用の現金と預金の合計を入れてください。これに入出金の実績を足し引きして「いまの手元資金」を出します。</p>
+    <label class="f">金額（円）</label><input class="inp big" type="number" inputmode="numeric" value="${esc(p.openCash)}" placeholder="0" onfocus="this.select()" oninput="App.prof('openCash',this.value)">
+    <label class="f">基準日</label><input class="inp" type="date" value="${esc(p.openDate)}" onchange="App.prof('openDate',this.value)">
+  </div>
+  <div class="card"><h2>バックアップ</h2>
+    <p class="muted small">データはこのタブレットの中だけに保存されています。アプリを消したり、Chromeの「サイトデータ削除」をすると消えてしまうので、ときどきバックアップしてGoogleドライブなどに保管してください。</p>
+    <p class="small">前回のバックアップ：<b>${S.meta.lastBackup ? jpDate(S.meta.lastBackup.slice(0, 10)) : 'まだありません'}</b></p>
+    <div class="row"><button class="btn pri" onclick="App.backup()">💾 バックアップを保存</button><button class="btn" onclick="App.pick('json')">📂 バックアップから戻す</button></div>
+  </div>
+  <div class="card"><h2>CSV（表計算ソフト用）</h2>
+    <p class="muted small">入出金をExcelやGoogleスプレッドシートで開ける形で書き出します。以前の「資金繰り管理」アプリで書き出したCSVも読み込めます。</p>
+    <div class="row"><button class="btn" onclick="App.csvOut()">📤 入出金をCSVで書き出す</button><button class="btn" onclick="App.pick('csv')">📥 CSVを読み込む</button></div>
+  </div>
+  <div class="card"><h2>使い方のコツ</h2>
+    <div class="tip"><b>ホーム画面に置く：</b>Chromeの右上「︙」→「ホーム画面に追加」（または「アプリをインストール」）。アイコンから開くと全画面になり、ネットがなくても使えます。</div>
+    <div class="tip"><b>PDFで保存：</b>「創業計画書」の「PDFで保存・印刷」→ 印刷画面のプリンタで「PDF形式で保存」を選びます。</div>
+    <div class="tip"><b>予定を入れる：</b>家賃や返済など毎月の支払いは「毎月くり返す」で予定を作ると、資金繰り表で先の残高がわかります。</div>
+  </div>
+  <div class="card"><h2>データを消す</h2>
+    <p class="muted small">すべてのデータを消して、最初の状態に戻します。先にバックアップを取ってください。</p>
+    <button class="btn danger" onclick="App.wipe()">すべてのデータを消去</button>
+    <p class="muted small" style="margin-top:14px">創業サポート ver ${APP_VER}</p>
+  </div>
+  </div>`;
+}
+
+/* =========================================================
+   印刷（PDF）
+   ========================================================= */
+const ptxt = v => esc(v).replace(/\n/g, '<br>');
+const pyen = v => num(v) ? comma(num(v)) : '';
+function printDoc(html, title) {
+  $('print').innerHTML = html;
+  const old = document.title; document.title = title;
+  setTimeout(() => { window.print(); setTimeout(() => { document.title = old; }, 500); }, 60);
+}
+function bpDocHTML(withAppendix) {
+  const b = S.bp, p = S.profile, c = bpCalc();
+  const career = b.career.filter(r => r.ym.trim() || r.text.trim());
+  const prods = b.products.filter(r => r.name.trim());
+  const partners = b.partners.filter(r => r.name.trim());
+  const loans = b.loans.filter(r => r.lender.trim() || num(r.balance));
+  const equip = b.equip.filter(r => r.name.trim() || num(r.amount));
+  const work = b.work.filter(r => r.name.trim() || num(r.amount));
+  const expL = {none: '事業を経営していたことはない', now: '事業を経営していたことがあり、現在もその事業を続けている', closed: '事業を経営していたことがあるが、すでにその事業をやめている'}[b.exp] || '';
+  const fundsRows = [['自己資金', b.funds.own, ''], ['親・兄弟・知人などからの借入', b.funds.family, b.funds.familyNote], ['金融機関からの借入', b.funds.bank, b.funds.bankNote], ['その他', b.funds.other, b.funds.otherNote]];
+  const needRows = [...equip.map(r => ['設備', r.name + (r.vendor ? '（見積先：' + r.vendor + '）' : ''), r.amount]), ...work.map(r => ['運転', r.name, r.amount])];
+  const n = Math.max(needRows.length, fundsRows.length);
+  let fundTbl = '';
+  for (let i = 0; i < n; i++) {
+    const a = needRows[i], f = fundsRows[i];
+    fundTbl += `<tr>${a ? `<td class="c">${a[0]}</td><td>${esc(a[1])}</td><td class="n">${pyen(a[2])}</td>` : '<td></td><td></td><td></td>'}${f ? `<td>${f[0]}${f[2] ? `<br><span style="font-size:8.5pt">${esc(f[2])}</span>` : ''}</td><td class="n">${pyen(f[1])}</td>` : '<td></td><td></td>'}</tr>`;
+  }
+  const o = b.outlook, oc = (k) => `<td class="n">${pyen(o.start[k])}</td><td class="n">${pyen(o.later[k])}</td>`;
+  const sim = calcSim();
+  let appx = '';
+  if (withAppendix && sim.valid) {
+    appx = `<div class="pb"></div><div class="ph"><h1 style="letter-spacing:.15em">別紙　収支計画（逆算表）</h1></div>
+    <div class="meta" style="margin-bottom:6px">${esc(p.name)}　${esc(p.owner)}</div>
+    <div class="sec"><h2>生活費を確保するための目標売上</h2><table>
+      <tr><th style="width:45%">① 生活費（月）</th><td class="n">${comma(sim.living)}</td><td>家に持ち帰る金額（税・社会保険を含む）</td></tr>
+      ${S.sim.fixed.map(i => `<tr><td>　固定費：${esc(i.name)}</td><td class="n">${pyen(i.amount)}</td><td></td></tr>`).join('')}
+      <tr class="tt"><td>② 固定費 合計</td><td class="n">${comma(sim.fixed)}</td><td>売上がなくてもかかる費用</td></tr>
+      <tr class="tt"><td>必要な粗利益（①＋②）</td><td class="n">${comma(sim.need)}</td><td>最低限これだけの粗利が必要</td></tr>
+      <tr><td>③ 粗利率</td><td class="n">${pct(sim.gp)}</td><td>${S.sim.gpMode === 'manual' ? '同業者等の目安' : '客単価と原価から計算'}</td></tr>
+      <tr><td>仕入・原価の目安</td><td class="n">${comma(sim.target - sim.need)}</td><td></td></tr>
+      <tr class="tt"><td>目標売上高（月）</td><td class="n">${comma(sim.target)}</td><td>年間 ${comma(sim.target * 12)} 円</td></tr>
+      <tr><td>損益分岐点売上高（月）</td><td class="n">${comma(sim.bep)}</td><td>固定費 ÷ 粗利率</td></tr>
+      <tr><td>客単価</td><td class="n">${comma(sim.price)}</td><td></td></tr>
+      <tr><td>必要な客数（月）</td><td class="n">${comma(sim.cust)} 人</td><td>${sim.days ? `営業日${sim.days}日 → 1日あたり ${sim.perDay.toFixed(1)} 人` : ''}</td></tr>
+      ${sim.planCust ? `<tr><td>販売計画売上（客数 ${comma(sim.planCust)}人 × 客単価）</td><td class="n">${comma(sim.planSales)}</td><td></td></tr>
+      <tr class="tt"><td>目標売上との差</td><td class="n">${comma(sim.diff)}</td><td>${sim.diff >= 0 ? 'プラス＝目標達成' : 'マイナス＝目標に届かない'}</td></tr>` : ''}
+    </table></div>`;
+  }
+  return `<div class="pdoc">
+  <div class="ph"><div style="width:30%"></div><h1>創業計画書</h1><div class="meta" style="width:30%">作成日：${jpDate(b.created)}<br>${esc(p.name)}<br>${esc(p.owner)}</div></div>
+  <table style="margin-bottom:4px"><tr><th style="width:15%">事業の内容</th><td>${esc(p.business)}</td><th style="width:15%">開業日（予定）</th><td style="width:20%">${jpDate(p.start)}</td></tr></table>
+  <div class="sec"><h2>1　創業の目的・動機</h2><table><tr><td class="tall">${ptxt(b.motive)}</td></tr></table></div>
+  <div class="sec"><h2>2　経営者の略歴など</h2><table>
+    <tr><th style="width:18%">年月</th><th>内容</th></tr>
+    ${(career.length ? career : [{ym: '', text: ''}]).map(r => `<tr><td>${esc(r.ym)}</td><td>${esc(r.text)}</td></tr>`).join('')}
+    <tr><th>過去の事業経験</th><td>${expL}</td></tr>
+    <tr><th>取得資格</th><td>${esc(b.licenses) || '特になし'}</td></tr>
+    <tr><th>知的財産権など</th><td>${esc(b.ip) || '特になし'}</td></tr></table></div>
+  <div class="sec"><h2>3　取り扱う商品・サービス</h2><table>
+    <tr><th style="width:18%">内容</th><td>${prods.length ? prods.map(r => `${esc(r.name)}${r.share ? `（売上シェア ${esc(r.share)}%）` : ''}`).join('<br>') : ''}</td></tr>
+    <tr><th>セールスポイント</th><td class="tall">${ptxt(b.salesPoint)}</td></tr>
+    <tr><th>販売ターゲット<br>販売戦略</th><td class="tall">${ptxt(b.target)}</td></tr>
+    <tr><th>競合・市場など<br>取り巻く状況</th><td class="tall">${ptxt(b.competition)}</td></tr></table></div>
+  <div class="sec"><h2>4　取引先・取引関係</h2><table>
+    <tr><th style="width:10%">区分</th><th>取引先名</th><th style="width:16%">所在地</th><th style="width:9%">シェア</th><th>取引条件</th></tr>
+    ${(partners.length ? partners : [{kind: '', name: '', addr: '', share: '', terms: ''}]).map(r => `<tr><td class="c">${esc(r.kind)}</td><td>${esc(r.name)}</td><td>${esc(r.addr)}</td><td class="n">${r.share ? esc(r.share) + '%' : ''}</td><td>${esc(r.terms)}</td></tr>`).join('')}</table></div>
+  <div class="sec"><h2>5　従業員</h2><table><tr>
+    <th>常勤役員の人数</th><td class="n">${esc(b.staff.officers || '0')} 人</td><th>従業員数</th><td class="n">${esc(b.staff.employees || '0')} 人</td>
+    <th>うち家族</th><td class="n">${esc(b.staff.family || '0')} 人</td><th>うちパート</th><td class="n">${esc(b.staff.part || '0')} 人</td></tr></table></div>
+  <div class="sec"><h2>6　お借入の状況（事業主個人）</h2><table>
+    <tr><th>借入先</th><th>使いみち</th><th style="width:18%">残高（円）</th><th style="width:18%">年間返済額（円）</th></tr>
+    ${loans.length ? loans.map(r => `<tr><td>${esc(r.lender)}</td><td>${esc(r.use)}</td><td class="n">${pyen(r.balance)}</td><td class="n">${pyen(r.annual)}</td></tr>`).join('') : '<tr><td colspan="4">なし</td></tr>'}</table></div>
+  <div class="sec"><h2>7　必要な資金と調達方法（単位：円）</h2><table>
+    <tr><th colspan="3">必要な資金</th><th colspan="2">調達の方法</th></tr>
+    ${fundTbl}
+    <tr class="tt"><td colspan="2">合計</td><td class="n">${comma(c.need)}</td><td>合計</td><td class="n">${comma(c.fund)}</td></tr></table></div>
+  <div class="sec"><h2>8　事業の見通し（月平均・単位：円）</h2><table>
+    <tr><th style="width:26%"></th><th style="width:17%">創業当初</th><th style="width:17%">1年後</th><th>売上高・売上原価・経費の根拠</th></tr>
+    <tr><td>売上高 ①</td>${oc('sales')}<td rowspan="9">${ptxt(b.basis)}</td></tr>
+    <tr><td>売上原価 ②</td>${oc('cost')}</tr>
+    <tr><td>経費　人件費</td>${oc('staff')}</tr>
+    <tr><td>　　　家賃</td>${oc('rent')}</tr>
+    <tr><td>　　　支払利息</td>${oc('interest')}</tr>
+    <tr><td>　　　その他</td>${oc('other')}</tr>
+    <tr class="tt"><td>経費 合計 ③</td><td class="n">${comma(c.start.exp)}</td><td class="n">${comma(c.later.exp)}</td></tr>
+    <tr class="tt"><td>利益 ①−②−③</td><td class="n">${comma(c.start.pro)}</td><td class="n">${comma(c.later.pro)}</td></tr>
+    <tr><td colspan="3" style="font-size:8.5pt">※個人事業の場合、事業主分の人件費は含みません。</td></tr></table></div>
+  <div class="sec"><h2>9　自由記述</h2><table><tr><td class="tall">${ptxt(b.extra)}</td></tr></table></div>
+  ${appx}
+  </div>`;
+}
+function cashDocHTML() {
+  const all = cashTable(), ci = all.findIndex(c => c.cur), cols = all.slice(Math.max(0, ci - 5));
+  const R = (l, k, tt) => `<tr class="${tt ? 'tt' : ''}"><td>${l}</td>${cols.map(c => `<td class="n">${c[k] ? comma(c[k]) : ''}</td>`).join('')}</tr>`;
+  return `<div class="pdoc"><div class="ph"><div style="width:25%"></div><h1 style="letter-spacing:.2em">資金繰り表</h1><div class="meta" style="width:25%">${jpDate(today())}<br>${esc(S.profile.name)}</div></div>
+  <table><tr><th>項目（円）</th>${cols.map(c => `<th style="text-align:right">${ymLabel(c.ym)}<br>${c.cur ? '今月見込' : c.fut ? '見込み' : '実績'}</th>`).join('')}</tr>
+  ${R('前月からの繰越', 'start', 1)}${R('売上', 'sales')}${R('その他の入金', 'other')}${R('借入', 'loan')}${R('自己資金', 'capital')}${R('入金 計', 'inSum', 1)}
+  ${R('仕入・外注など', 'var')}${R('固定費（経費）', 'fixed')}${R('設備の購入', 'capex')}${R('借入の返済', 'repay')}${R('生活費・税金', 'owner')}${R('出金 計', 'outSum', 1)}
+  ${R('差引', 'net')}${R('翌月への繰越', 'end', 1)}</table>
+  <div class="foot">今月以降は登録された予定を含む見込みです。</div></div>`;
+}
+
+/* =========================================================
+   操作
+   ========================================================= */
+const App = {
+  go(tab) { UI.tab = tab; try { sessionStorage.setItem('sogyo_tab', tab); } catch (e) {} render(); },
+  // 収支計画
+  simVal(k, v) { S.sim[k] = v; S.sim.touched = true; save(); updateSim(); },
+  simItem(list, id, f, v) { const it = S.sim[list].find(i => i.id === id); if (!it) return; it[f] = f === 'amount' ? num(v) : v; S.sim.touched = true; save(); updateSim(); },
+  simAdd(list) { S.sim[list].push({id: uid(), name: '', amount: 0}); save(); render(true); },
+  simDel(list, id) { S.sim[list] = S.sim[list].filter(i => i.id !== id); save(); render(true); },
+  simMode(m) { S.sim.gpMode = m; S.sim.touched = true; save(); render(true); },
+  preset(k) {
+    if (!k) return;
+    if (!confirm(`「${PRESETS[k].label}」のひな形を読み込みます。②固定費と③売値・原価の入力がおきかわります。よろしいですか？`)) { render(true); return; }
+    Object.assign(S.sim, presetItems(k), {industry: k, gpMode: 'auto', touched: true}); save(); render(true); toast('ひな形を読み込みました');
+  },
+  // 入出金
+  recSub(k) { UI.recSub = k; if (k === 'form' && !UI.editId) UI.rec = UI.rec || newRec('in'); render(); },
+  quick(type, plan) { UI.editId = null; UI.rec = newRec(type); if (plan) { UI.rec.plan = true; UI.rec.date = addMonthDate(today(), 1); } UI.recSub = 'form'; App.go('rec'); setTimeout(() => $('r-amount') && $('r-amount').focus(), 80); },
+  recType(t) { if (UI.rec.type === t) return; UI.rec.type = t; UI.rec.cat = t === 'in' ? '売上' : '仕入'; render(true); },
+  recCat(c) { UI.rec.cat = c; render(true); },
+  recDate(v) { UI.rec.date = v; if (v > today() && !UI.rec.plan) { UI.rec.plan = true; toast('未来の日付なので「予定」にしました'); render(true); } },
+  recSave() {
+    const r = UI.rec, amt = Math.abs(num(r.amount));
+    if (!amt) { toast('金額を入れてください'); $('r-amount') && $('r-amount').focus(); return; }
+    if (!isYmd(r.date)) { toast('日付を入れてください'); return; }
+    if (UI.editId) {
+      const t = S.tx.find(x => x.id === UI.editId);
+      if (t) Object.assign(t, {date: r.date, type: r.type, cat: r.cat, amount: amt, memo: r.memo.trim(), plan: !!r.plan});
+      toast('修正しました'); UI.editId = null; UI.rec = newRec(r.type); UI.recSub = 'list'; UI.listYM = r.date.slice(0, 7);
+    } else {
+      S.tx.push({id: uid(), date: r.date, type: r.type, cat: r.cat, amount: amt, memo: r.memo.trim(), plan: !!r.plan});
+      for (let k = 1; k <= (r.repeat || 0); k++) S.tx.push({id: uid(), date: addMonthDate(r.date, k), type: r.type, cat: r.cat, amount: amt, memo: r.memo.trim(), plan: true});
+      toast(r.repeat ? `登録しました（予定${r.repeat}件も追加）` : '登録しました');
+      UI.rec = {...newRec(r.type), date: r.date, cat: r.cat, plan: r.plan};
+    }
+    save(true); render(true);
+    setTimeout(() => $('r-amount') && $('r-amount').focus(), 50);
+  },
+  edit(id) { const t = S.tx.find(x => x.id === id); if (!t) return; UI.editId = id; UI.rec = {type: t.type, date: t.date, cat: t.cat, amount: t.amount, memo: t.memo, plan: t.plan, repeat: 0}; UI.recSub = 'form'; App.go('rec'); },
+  recCancel() { UI.editId = null; UI.rec = newRec('in'); UI.recSub = 'list'; render(); },
+  recDel() { if (!confirm('この記録を削除しますか？')) return; S.tx = S.tx.filter(x => x.id !== UI.editId); UI.editId = null; UI.rec = newRec('in'); UI.recSub = 'list'; save(true); render(); toast('削除しました'); },
+  done(id) { const t = S.tx.find(x => x.id === id); if (!t) return; t.plan = false; if (t.date > today()) t.date = today(); save(true); render(true); toast('実績にしました'); },
+  listMonth(k) { UI.listYM = k === 0 ? curYM() : addMonth(UI.listYM, k); render(true); },
+  listFilter(f) { UI.listFilter = f; render(true); },
+  lateList() { const l = overduePlans().sort((a, b) => a.date.localeCompare(b.date)); UI.listYM = l.length ? l[0].date.slice(0, 7) : curYM(); UI.listFilter = 'plan'; UI.recSub = 'list'; App.go('rec'); },
+  hours(m, v) { if (v === '' || v === null) delete S.hours[m]; else S.hours[m] = num(v); save(); render(true); },
+  // 創業計画書
+  bpSet(p, v) { setPath(S.bp, p, v); save(); updateBpCalc(); },
+  bpAdd(list) { S.bp[list].push(blankRow(list)); save(); render(true); },
+  bpDel(list, i) { const r = S.bp[list][i]; if (Object.values(r).some(v => String(v).trim() && !['販売先', '仕入先', '外注先'].includes(v)) && !confirm('この行を削除しますか？')) return; S.bp[list].splice(i, 1); save(); render(true); },
+  prof(k, v) { S.profile[k] = v; save(); if (k === 'name') renderNav(); },
+  bpReflect() {
+    const s = calcSim();
+    if (!s.valid || !s.target) { toast('先に「収支計画」を入力してください'); return; }
+    if (!confirm('「収支計画」の数字を「8. 事業の見通し」に入れます。いま入っている数字は上書きされます。よろしいですか？')) return;
+    const by = re => S.sim.fixed.filter(i => re.test(i.name)).reduce((a, i) => a + num(i.amount), 0);
+    const staff = by(/人件/), rent = by(/家賃|地代/);
+    const fill = (o, sales) => { o.sales = Math.round(sales); o.cost = Math.round(sales * (1 - s.gp)); o.staff = staff; o.rent = rent; o.other = Math.max(0, Math.round(s.fixed - staff - rent - num(o.interest))); };
+    fill(S.bp.outlook.later, s.target);
+    if (s.planSales > 0) fill(S.bp.outlook.start, s.planSales);
+    const auto = `【収支計画より】生活費 月${comma(s.living)}円と固定費 月${comma(s.fixed)}円をまかなうには、粗利 月${comma(s.need)}円が必要。粗利率${pct(s.gp)}から目標売上は月${comma(s.target)}円（客単価${comma(s.price)}円 × 月${comma(s.cust)}人${s.days ? `、1日あたり約${s.perDay.toFixed(1)}人` : ''}）。` + (s.planSales > 0 ? `創業当初は月${comma(s.planCust)}人の来客を見込み、売上 月${comma(s.planSales)}円。` : '');
+    S.bp.basis = S.bp.basis.replace(/【収支計画より】[^\n]*\n?/, '').trim();
+    S.bp.basis = auto + (S.bp.basis ? '\n' + S.bp.basis : '');
+    save(true); render(true); toast('事業の見通しに反映しました');
+  },
+  bpCheck() {
+    const l = bpCheckList();
+    $('bp-check').innerHTML = `<div class="card"><h2>記入チェック</h2>${l.map(([k, m]) => `<div class="note ${k}">${esc(m)}</div>`).join('')}<button class="btn sm" onclick="$('bp-check').innerHTML=''">閉じる</button></div>`;
+    $('bp-check').scrollIntoView({behavior: 'smooth', block: 'start'});
+  },
+  printBp() {
+    const appx = calcSim().valid && S.sim.touched ? confirm('収支計画の逆算表を「別紙」として最後のページに付けますか？\n（OK＝付ける／キャンセル＝付けない）') : false;
+    printDoc(bpDocHTML(appx), '創業計画書_' + (S.profile.name || S.profile.owner || '') + '_' + today());
+    toast('印刷画面で「PDF形式で保存」を選んでください');
+  },
+  printCash() { printDoc(cashDocHTML(), '資金繰り表_' + today()); },
+  // データ
+  backup() {
+    const data = JSON.stringify({app: 'sogyo-support', version: 1, exportedAt: new Date().toISOString(), data: S}, null, 1);
+    download(new Blob([data], {type: 'application/json'}), `創業サポート_バックアップ_${today()}.json`);
+    S.meta.lastBackup = new Date().toISOString(); save(true); if (UI.tab !== 'rec') render(true);
+  },
+  pick(kind) { const f = $('file'); f.value = ''; f.accept = kind === 'json' ? '.json,application/json' : '.csv,text/csv,text/plain'; f.dataset.kind = kind; f.click(); },
+  csvOut() {
+    const q = v => { const s = String(v ?? ''); return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+    const rows = [['日付', '区分', 'カテゴリ', '金額', '摘要', '状態']].concat([...S.tx].sort((a, b) => a.date.localeCompare(b.date)).map(t => [t.date, t.type === 'in' ? '入金' : '出金', t.cat, t.amount, t.memo, t.plan ? '予定' : '実績']));
+    download(new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), rows.map(r => r.map(q).join(',')).join('\r\n')], {type: 'text/csv'}), `入出金_${today()}.csv`);
+  },
+  wipe() {
+    if (!confirm('すべてのデータ（入出金・収支計画・創業計画書）を消去します。元に戻せません。よろしいですか？')) return;
+    if (!confirm('本当に消去しますか？（バックアップは取りましたか？）')) return;
+    S = normalize(null); save(true); UI.editId = null; UI.rec = null; App.go('home'); toast('消去しました');
+  }
+};
+window.App = App;
+
+function download(blob, name) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  toast('「ダウンロード」フォルダに保存しました');
+}
+function parseCSV(text) {
+  const rows = []; let row = [], f = '', q = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) { if (c === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
+    else if (c === '"') q = true;
+    else if (c === ',') { row.push(f); f = ''; }
+    else if (c === '\n') { row.push(f); rows.push(row); row = []; f = ''; }
+    else if (c !== '\r') f += c;
+  }
+  if (f !== '' || row.length) { row.push(f); rows.push(row); }
+  return rows.filter(r => r.some(x => x.trim() !== ''));
+}
+function importCSV(text) {
+  const rows = parseCSV(text.replace(/^﻿/, ''));
+  if (rows.length < 2) { toast('読み込めるデータがありません'); return; }
+  const h = rows[0].map(x => x.trim()), ix = n => h.indexOf(n);
+  const iD = ix('日付'), iT = ix('区分'), iC = ix('カテゴリ'), iA = ix('金額'), iM = ix('摘要'), iS = ix('状態');
+  if (iD < 0 || iA < 0 || iT < 0) { toast('「日付・区分・金額」の列が見つかりません'); return; }
+  const key = t => [t.date, t.type, t.cat, t.amount, t.memo].join('|');
+  const have = new Set(S.tx.map(key)); let add = 0, skip = 0;
+  rows.slice(1).forEach(r => {
+    const date = (r[iD] || '').trim().replace(/\//g, '-').replace(/-(\d)(?=-|$)/g, '-0$1');
+    const type = /入/.test(r[iT] || '') ? 'in' : /出/.test(r[iT] || '') ? 'out' : null;
+    const amount = Math.abs(num(r[iA]));
+    if (!isYmd(date) || !type || !amount) { skip++; return; }
+    let cat = (iC >= 0 ? r[iC] : '').trim(); cat = OLD_CAT[cat] || cat || (type === 'in' ? '売上' : 'その他の経費');
+    // 旧アプリのCSVはメモ内のカンマで列がずれることがあるので、摘要以降をつなげる
+    const memo = iM >= 0 ? (iS >= 0 ? r[iM] : r.slice(iM).join(',')) : '';
+    const t = {id: uid(), date, type, cat, amount, memo: (memo || '').trim(), plan: iS >= 0 && /予定/.test(r[iS] || '')};
+    if (have.has(key(t))) { skip++; return; }
+    have.add(key(t)); S.tx.push(t); add++;
+  });
+  save(true); render(); toast(`${add}件を読み込みました${skip ? `（${skip}件は重複・不正のため除外）` : ''}`);
+}
+$('file').addEventListener('change', e => {
+  const file = e.target.files[0]; if (!file) return;
+  const kind = e.target.dataset.kind, rd = new FileReader();
+  rd.onload = () => {
+    try {
+      if (kind === 'json') {
+        const j = JSON.parse(rd.result); const d = j && j.data ? j.data : j;
+        if (!d || !d.sim || !Array.isArray(d.tx)) { toast('このアプリのバックアップファイルではないようです'); return; }
+        if (!confirm(`バックアップ（入出金${d.tx.length}件）で、いまのデータをおきかえます。よろしいですか？`)) return;
+        S = normalize(d); save(true); render(); toast('バックアップから戻しました');
+      } else importCSV(rd.result);
+    } catch (err) { toast('ファイルを読み込めませんでした'); }
+  };
+  rd.readAsText(file, 'utf-8');
+});
+
+/* ---------- 起動 ---------- */
+render();
+if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
