@@ -1,6 +1,6 @@
 // オフラインでも開けるように、アプリのファイルを端末にしまっておく
 // アプリを更新したら、下の版番号を1つ上げる
-const CACHE = 'sogyo-v1';
+const CACHE = 'sogyo-v2';
 const FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
